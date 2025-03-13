@@ -23,7 +23,7 @@ class IQueue(ABC):
 class IWorker(ABC):
 
     @abstractmethod
-    def __init__(self, worker_id, task_queue, lock):
+    def __init__(self, worker_id, task_queue):
         pass
 
     @abstractmethod
@@ -38,14 +38,14 @@ class IWorker(ABC):
 class IWorkerFactory(ABC):
 
     @abstractmethod
-    def build_worker(self, worker_id, task_queue, lock_instance):
+    def build_worker(self, worker_id, task_queue):
         pass
 
 
 class IDispatcher(ABC):
 
     @abstractmethod
-    def __init__(self, workers_amount, task_queues, lock):
+    def __init__(self, workers_amount, task_queues):
         pass
 
     @abstractmethod
@@ -53,5 +53,5 @@ class IDispatcher(ABC):
         pass
 
     @abstractmethod
-    def create_workers(self):
+    def create_and_run_threads(self, worker_factory):
         pass
