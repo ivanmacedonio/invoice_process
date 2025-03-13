@@ -3,4 +3,4 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Initialize environment variables
+WORKERS_AMOUNT = os.getenv('WORKERS_AMOUNT')
