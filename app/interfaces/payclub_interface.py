@@ -4,7 +4,15 @@ from abc import abstractmethod, ABC
 class IPayclubService(ABC):
 
     @abstractmethod
-    def __init__(self):
+    def __init__(self, repository):
+        pass
+
+    @abstractmethod
+    def get_authorization_token(self):
+        pass
+
+    @abstractmethod
+    def get_last_24_hours_transactions(self, access_token):
         pass
 
 
@@ -15,7 +23,11 @@ class IPayclubRepository(ABC):
         pass
 
     @abstractmethod
-    def get_authorization_response(self, query_payload):
-        if not query_payload:
-            raise TypeError('query_payload is required')
+    def get_authorization_response(self):
+        pass
+
+    @abstractmethod
+    def get_credits_transactions_by_date(self, access_token, date_from, date_to):
+        if not all([access_token, date_from, date_to]):
+            raise ValueError("missing fields while trying to get transactions history")
         pass

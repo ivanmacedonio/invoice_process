@@ -27,15 +27,9 @@ class IQueue(ABC):
 class IWorker(ABC):
 
     @abstractmethod
-    def __init__(self, worker_id, task_queue):
-        if not worker_id or task_queue:
+    def __init__(self, worker_id, task_queue, process_method):
+        if not all([worker_id, task_queue, process_method]):
             raise TypeError('lack of arguments while trying to instance Worker class')
-        pass
-
-    @abstractmethod
-    def process_item(self, item):
-        if not item:
-            raise TypeError('item is required')
         pass
 
     @abstractmethod
@@ -46,8 +40,8 @@ class IWorker(ABC):
 class IWorkerFactory(ABC):
 
     @abstractmethod
-    def build_worker(self, worker_id, task_queue):
-        if not worker_id or task_queue:
+    def build_worker(self, worker_id, task_queue, process_method):
+        if not all([worker_id, task_queue, process_method]):
             raise TypeError('lack of arguments while trying to execute build_worker')
         pass
 

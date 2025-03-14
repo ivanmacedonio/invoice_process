@@ -5,7 +5,7 @@ from typing import Union, Optional
 
 from configs.logger import logger
 from interfaces.thread_pool_interface import IQueue, IWorker, IDispatcher, IWorkerFactory
-
+from processes.process_item import process_item
 
 class Queue(IQueue):
 
@@ -27,13 +27,10 @@ class Queue(IQueue):
 
 class Worker(IWorker):
 
-    def __init__(self, worker_id: int, task_queue: queue.Queue):
+    def __init__(self, worker_id: int, task_queue: queue.Queue, process_method):
         self.worker_id = worker_id
         self.task_queue = task_queue
-
-    def process_item(self, item):
-        sleep(2)
-        logger.info(f'processing {item}')
+        self.process_method = process_method
 
     def run(self):
         while True:
@@ -42,7 +39,7 @@ class Worker(IWorker):
             except queue.Empty:
                 break
 
-            self.process_item(item)
+            self.process_method(item)
             self.task_queue.task_done()
 
 
@@ -60,7 +57,7 @@ class Dispatcher(IDispatcher):
         threads = []
         for i in range(self.workers_amount):
             worker = worker_factory.build_worker(
-                i, self.task_queues[i])
+                i, self.task_queues[i], process_item)
             thread = threading.Thread(target=worker.run)
             thread.start()
             threads.append(thread)

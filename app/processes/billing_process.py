@@ -1,35 +1,28 @@
 import requests
 import traceback
+from repositories.payclub_repository import PayclubRepository
 from services.billing import Billing
+from services.payclub import PayclubService
 from configs.logger import logger
+from decorators.error_handling_provider import error_handling_provider
 
+def setup_and_get_payclub_instance():
+    payclub_repository_instance = PayclubRepository()
+    payclub_instance = PayclubService(payclub_repository_instance)
+    return payclub_instance
+
+def get_tasks_to_enqueue():
+    payclub_instance = setup_and_get_payclub_instance()
+    transactions_history = payclub_instance.get_last_24_hours_transactions()
+    return transactions_history
+
+@error_handling_provider
 def billing_process():
-    try:
-        billing_instance = Billing()
-        billing_instance.set_tasks([f'task {i}' for i in range(20)])
-        billing_instance.run()
+    tasks = get_tasks_to_enqueue() #TODO: use an iterator? instead an array
 
-    except ValueError as ve:
-        logger.error(traceback.format_exc())
-        logger.error(f'Unexpected Value error: {ve}')
+    billing_instance = Billing()
+    billing_instance.set_tasks(tasks)
+    billing_instance.run()
 
-    except TypeError as te:
-        logger.error(traceback.format_exc())
-        logger.error(f'Unexpected Type error: {te}')
 
-    except KeyError as ke:
-        logger.error(traceback.format_exc())
-        logger.error(f'Unexpected Key error: {ke}')
-
-    except NameError as ne:
-        logger.error(traceback.format_exc())
-        logger.error(f'Local or global variable name is missing: {ne}')
-
-    except Exception as e:
-        logger.error(traceback.format_exc())
-        logger.error(f'Unexpected unhandled exception: {e}')
-
-    except requests.RequestException as re:
-        logger.error(traceback.format_exc())
-        logger.error(f'Unexpected request error: {re}')
 
