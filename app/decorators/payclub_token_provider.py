@@ -4,24 +4,25 @@ from repositories.payclub_repository import PayclubRepository
 from interfaces.payclub_interface import IPayclubRepository
 from configs.environments import PVS_BASE_URL_PATH, PVS_CLIENT_ID, PVS_CLIENT_SECRET
 from configs.logger import logger
+from entities.query_payload import PayclubAuthQueryPayload
 
 token_manager_instance = None
 
 
 class TokenManager:
 
-    def __init__(self):
+    def __init__(self, repository: IPayclubRepository):
 
         self._cached_token = None
         self._token_expiration = 0
-        logger.info("creando instancia de TOKEN")
+        self.repository = repository
 
-    def get_token(self, query_payload: dict, payclub_repository: IPayclubRepository):
+    def get_token(self, query_payload: dict):
 
         if self._cached_token and time.time() < self._token_expiration:
             return self._cached_token
 
-        json_response = payclub_repository.get_authorization_response(
+        json_response = self.repository.get_authorization_response(
             query_payload)
 
         self._cached_token = json_response.get("access_token", None)
@@ -53,7 +54,7 @@ def payclub_token_provider(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
 
-        query_payload: dict = {
+        query_payload = PayclubAuthQueryPayload(**{
             "url": f'{PVS_BASE_URL_PATH}/platformx/auth/token',
             "username": PVS_CLIENT_ID,
             "password": PVS_CLIENT_SECRET,
@@ -64,7 +65,8 @@ def payclub_token_provider(func):
             "headers":  {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
-        }
+        })
+
         token_manager = token_manager_singleton()
         access_token = token_manager.get_token(query_payload)
         return func(*args, access_token=access_token, **kwargs)

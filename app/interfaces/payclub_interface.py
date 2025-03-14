@@ -15,5 +15,7 @@ class IPayclubRepository(ABC):
         pass
 
     @abstractmethod
-    def get_authorization_response(self, query_payload: dict):
+    def get_authorization_response(self, query_payload):
+        if not query_payload:
+            raise TypeError('query_payload is required')
         pass

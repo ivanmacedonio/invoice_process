@@ -6,7 +6,6 @@ credits_billing_blueprint = Blueprint(
     __name__
 )
 
-
 @credits_billing_blueprint.route('', methods=["GET"])
 def execute_credits_billing():
     billing_process()
