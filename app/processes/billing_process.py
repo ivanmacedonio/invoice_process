@@ -4,7 +4,6 @@ from services.billing import Billing
 from configs.logger import logger
 
 def billing_process():
-    logger.debug(access_token)
     try:
         billing_instance = Billing()
         billing_instance.set_tasks([f'task {i}' for i in range(20)])
