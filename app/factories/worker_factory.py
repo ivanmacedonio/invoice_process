@@ -1,6 +1,5 @@
 from interfaces.thread_pool_interface import IWorkerFactory, IWorker
 from services.thread_pool import Worker
-from configs.logger import logger
 import queue
 
 

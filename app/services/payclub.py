@@ -23,7 +23,13 @@ class PayclubService(IPayclubService):
 
         date_from = parse_datetime_to_payclub_date_format(yesterday)
         date_to = parse_datetime_to_payclub_date_format(today)
-        print(date_to, date_from)
+        response = self.repository.get_credits_transactions_by_date(
+            access_token, date_from, date_to)
+        transactions_history = response.json().get('data', [])
+        return transactions_history
+
+    @payclub_token_provider
+    def get_transactions_by_date(self, access_token, date_from, date_to):
         response = self.repository.get_credits_transactions_by_date(
             access_token, date_from, date_to)
         transactions_history = response.json().get('data', [])

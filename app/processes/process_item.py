@@ -1,2 +1,5 @@
+from configs.logger import logger
+
+
 def process_item(item):
-    print(item['product'])
+    logger.info(f'Processing {item['product']}')

@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, request
 from processes.billing_process import billing_process
 
 credits_billing_blueprint = Blueprint(
@@ -6,7 +6,9 @@ credits_billing_blueprint = Blueprint(
     __name__
 )
 
+
 @credits_billing_blueprint.route('', methods=["GET"])
 def execute_credits_billing():
-    billing_process()
+    args = request.args
+    billing_process(args)
     return {"message": "Running billing procesess for payclub credits."}

@@ -1,4 +1,5 @@
 from abc import abstractmethod, ABC
+import re
 
 
 class IPayclubService(ABC):
@@ -13,6 +14,15 @@ class IPayclubService(ABC):
 
     @abstractmethod
     def get_last_24_hours_transactions(self, access_token):
+        pass
+
+    @abstractmethod
+    def get_transactions_by_date(self, access_token, date_from, date_to):
+        if not re.match(r'^\d{8} \d{2}:\d{2}:\d{2}$', date_from):
+            raise ValueError(f'dateFrom has an invalid format')
+        elif not re.match(r'^\d{8} \d{2}:\d{2}:\d{2}$', date_to):
+            raise ValueError(f'dateTo has an invalid format')
+
         pass
 
 
@@ -31,10 +41,4 @@ class IPayclubRepository(ABC):
         if not all([access_token, date_from, date_to]):
             raise ValueError(
                 "missing fields while trying to get transactions history")
-        pass
-
-    @abstractmethod
-    def get_credits_transactions_by_date(self, access_token, date_from, date_to):
-        if not all([access_token, date_from, date_to]):
-            raise ValueError("missing fields while trying to get transactions history")
         pass

@@ -3,7 +3,7 @@ from configs.environments import PVS_BASE_URL_PATH, PVS_CLIENT_ID, PVS_CLIENT_SE
 from requests.auth import HTTPBasicAuth
 from configs.logger import logger
 from interfaces.payclub_interface import IPayclubRepository
-from entities.query_payload import PayclubAuthQueryPayload, PayclubQueryPayload
+from entities.dtos.payclub_payload_dto import PayclubAuthQueryPayload, PayclubQueryPayload
 
 
 class PayclubRequestException(requests.RequestException):

@@ -1,5 +1,4 @@
-from dataclasses import asdict, dataclass
-from typing import Optional
+from dataclasses import dataclass
 
 
 @dataclass
@@ -9,6 +8,7 @@ class PayclubAuthQueryPayload:
     password: str
     body: dict
     headers: dict
+
 
 @dataclass
 class PayclubQueryPayload:
