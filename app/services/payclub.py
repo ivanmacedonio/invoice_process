@@ -14,10 +14,12 @@ class PayclubService(IPayclubService):
         expiration_time = json_response.get("expires_in", None)
         return access_token, expiration_time
 
+    # TODO: use iterator and util to parse the date to the payclub waited format
     @payclub_token_provider
-    def get_last_24_hours_transactions(self, access_token):
+    def get_last_24_hours_transactions(self, access_token: str):
         date_from = '20241201 00:00:00'
         date_to = '20241223 23:59:59'
-        response = self.repository.get_credits_transactions_by_date(access_token, date_from, date_to)
+        response = self.repository.get_credits_transactions_by_date(
+            access_token, date_from, date_to)
         transactions_history = response.json().get('data', [])
         return transactions_history

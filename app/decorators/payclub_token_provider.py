@@ -3,6 +3,7 @@ from interfaces.payclub_interface import IPayclubRepository, IPayclubService
 
 token_manager_instance = None
 
+
 def token_manager_singleton():
     global token_manager_instance
     if not token_manager_instance:

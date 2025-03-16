@@ -17,7 +17,7 @@ class Billing(IBilling):
         return task_queues
 
     @classmethod
-    def create_and_get_dispatchers(self, tasks):
+    def create_and_get_dispatchers(self, tasks: list):
         task_queues = self.create_and_get_queues()
         dispatchers = Dispatcher(WORKERS_AMOUNT, task_queues)
         dispatchers.dispatch(tasks)
@@ -29,7 +29,7 @@ class Billing(IBilling):
         threads = dispatchers.create_and_run_threads(worker_factory)
         return threads
 
-    def set_tasks(self, tasks):
+    def set_tasks(self, tasks: list):
         self.tasks = tasks
 
     def run(self):

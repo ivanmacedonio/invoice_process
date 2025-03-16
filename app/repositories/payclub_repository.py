@@ -35,7 +35,7 @@ class PayclubRepository(IPayclubRepository):
 
         if response.status_code > 299:
             raise requests.RequestException(
-               f'Error while trying to fetch PVS auth token: {str(response)}')
+                f'Error while trying to fetch PVS auth token: {str(response)}')
 
         return response
 
@@ -45,6 +45,6 @@ class PayclubRepository(IPayclubRepository):
             'url': f'{PVS_BASE_URL_PATH}/pxadapters/hlpoints/company/SC000001?{query_params}',
             'headers': {'Authorization': f'Bearer {access_token}', 'appname': PVS_APP_NAME}
         })
-        response = requests.get(url=query_payload.url, headers=query_payload.headers)
+        response = requests.get(url=query_payload.url,
+                                headers=query_payload.headers)
         return response
-

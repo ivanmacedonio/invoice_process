@@ -2,6 +2,7 @@ import traceback
 import requests
 from configs.logger import logger
 
+
 def error_handling_provider(func):
     def wrapper(*args, **kwargs):
         try:

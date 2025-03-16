@@ -1,7 +1,9 @@
 import time
 from configs.logger import logger
 
+
 class TokenManager:
+
     def __init__(self, payclub_service):
         self._cached_token = None
         self._token_expiration = 0

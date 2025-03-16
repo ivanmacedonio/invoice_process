@@ -1,11 +1,12 @@
 import threading
 import queue
-from time import sleep
+import psutil
 from typing import Union, Optional
 
 from configs.logger import logger
 from interfaces.thread_pool_interface import IQueue, IWorker, IDispatcher, IWorkerFactory
 from processes.process_item import process_item
+
 
 class Queue(IQueue):
 
