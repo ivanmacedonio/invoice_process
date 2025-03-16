@@ -6,6 +6,23 @@ from interfaces.payclub_interface import IPayclubRepository
 from entities.query_payload import PayclubAuthQueryPayload, PayclubQueryPayload
 
 
+class PayclubRequestException(requests.RequestException):
+
+    def __init__(self, response):
+        super().__init__(response)
+        self.response = response
+        self.status_code = response.status_code
+
+    def get_error_message(self):
+        try:
+            return self.response.json().get("error", {}).get("serviceErrorMessage", "No error message provided")
+        except ValueError:
+            return "No error message provided"
+
+    def __str__(self):
+        return f'status_code: {self.status_code} - error_message: {self.get_error_message()}'
+
+
 class PayclubRepository(IPayclubRepository):
 
     def __init__(self):
@@ -34,8 +51,7 @@ class PayclubRepository(IPayclubRepository):
         logger.info(f'Payclub token retrieve response: {str(response)}')
 
         if response.status_code > 299:
-            raise requests.RequestException(
-                f'Error while trying to fetch PVS auth token: {str(response)}')
+            raise PayclubRequestException(response)
 
         return response
 
@@ -47,4 +63,11 @@ class PayclubRepository(IPayclubRepository):
         })
         response = requests.get(url=query_payload.url,
                                 headers=query_payload.headers)
+
+        if response.status_code > 299:
+            raise PayclubRequestException(response)
+
+        logger.info(
+            f'Iterating over {response.json().get('pagination', {}).get('total_records', None)} transactions')
+
         return response

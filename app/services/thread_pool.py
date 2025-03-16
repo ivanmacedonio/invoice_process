@@ -1,6 +1,5 @@
 import threading
 import queue
-import psutil
 from typing import Union, Optional
 
 from configs.logger import logger

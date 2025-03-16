@@ -24,12 +24,12 @@ def error_handling_provider(func):
             logger.error(traceback.format_exc())
             logger.error(f'Unexpected Attribute error: {ae}')
 
-        except Exception as e:
-            logger.error(traceback.format_exc())
-            logger.error(f'Unexpected unhandled exception: {e}')
-
         except requests.RequestException as re:
             logger.error(traceback.format_exc())
             logger.error(f'Unexpected request error: {re}')
+
+        except Exception as e:
+            logger.error(traceback.format_exc())
+            logger.error(f'Unexpected unhandled exception: {e}')
 
     return wrapper
