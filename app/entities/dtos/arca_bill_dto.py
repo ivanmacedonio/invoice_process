@@ -10,7 +10,7 @@ class Iva:
 
 
 @dataclass
-class BillDTO:
+class ARCABillDTO:
     CantReg: int
     PtoVta: str
     CbteTipo: str

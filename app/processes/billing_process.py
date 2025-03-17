@@ -13,7 +13,9 @@ def setup_and_get_payclub_instance():
 def get_transactions_strategy(custom_dates: dict):
     payclub_instance = setup_and_get_payclub_instance()
 
-    if all(key in custom_dates for key in ['dateFrom', 'dateTo']):
+    # query README.md to view the wished format of the dates
+    dates_were_received = all(key in custom_dates for key in ['dateFrom', 'dateTo'])
+    if dates_were_received:
         return payclub_instance.get_transactions_by_date(date_from=custom_dates['dateFrom'], date_to=custom_dates['dateTo'])
     else:
         return payclub_instance.get_last_24_hours_transactions()
