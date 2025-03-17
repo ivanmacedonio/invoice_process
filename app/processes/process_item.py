@@ -1,4 +1,4 @@
-from configs.logger import logger
+from app.configs.logger import logger
 
 
 def process_item(item):

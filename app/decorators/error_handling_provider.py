@@ -1,6 +1,6 @@
 import traceback
 import requests
-from configs.logger import logger
+from app.configs.logger import logger
 
 
 def error_handling_provider(func):

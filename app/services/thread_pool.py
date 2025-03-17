@@ -2,9 +2,9 @@ import threading
 import queue
 from typing import Union, Optional
 
-from configs.logger import logger
-from interfaces.thread_pool_interface import IQueue, IWorker, IDispatcher, IWorkerFactory
-from processes.process_item import process_item
+from app.configs.logger import logger
+from app.interfaces.thread_pool_interface import IQueue, IWorker, IDispatcher, IWorkerFactory
+from app.processes.process_item import process_item
 
 
 class Queue(IQueue):

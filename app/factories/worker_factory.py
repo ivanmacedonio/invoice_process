@@ -1,5 +1,5 @@
-from interfaces.thread_pool_interface import IWorkerFactory, IWorker
-from services.thread_pool import Worker
+from app.interfaces.thread_pool_interface import IWorkerFactory, IWorker
+from app.services.thread_pool import Worker
 import queue
 
 
