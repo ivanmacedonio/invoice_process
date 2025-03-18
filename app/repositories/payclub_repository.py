@@ -1,9 +1,9 @@
 import requests
-from configs.environments import PVS_BASE_URL_PATH, PVS_CLIENT_ID, PVS_CLIENT_SECRET, PVS_APP_NAME
+from app.configs.environments import PVS_BASE_URL_PATH, PVS_CLIENT_ID, PVS_CLIENT_SECRET, PVS_APP_NAME
 from requests.auth import HTTPBasicAuth
-from configs.logger import logger
-from interfaces.payclub_interface import IPayclubRepository
-from entities.dataclasses.payclub_payload_dataclass import PayclubAuthQueryPayload, PayclubQueryPayload
+from app.configs.logger import logger
+from app.interfaces.payclub_interface import IPayclubRepository
+from app.entities.dataclasses.payclub_payload_dataclass import PayclubAuthQueryPayload, PayclubQueryPayload
 
 
 class PayclubRequestException(requests.RequestException):

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
-from interfaces.payclub_interface import IPayclubService, IPayclubRepository
-from decorators.payclub_token_provider import payclub_token_provider
-from utils.parse_datetime_to_string import parse_datetime_to_payclub_date_format
+from app.interfaces.payclub_interface import IPayclubService, IPayclubRepository
+from app.decorators.payclub_token_provider import payclub_token_provider
+from app.utils.parse_datetime_to_string import parse_datetime_to_payclub_date_format
 
 
 class PayclubService(IPayclubService):

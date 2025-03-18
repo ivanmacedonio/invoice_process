@@ -1,5 +1,5 @@
 import time
-from configs.logger import logger
+from app.configs.logger import logger
 
 
 class TokenManager:

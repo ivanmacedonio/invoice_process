@@ -16,9 +16,6 @@ class Queue(IQueue):
     def set_task_queues(self, new_task_queues: list[queue.Queue]):
         self.task_queues = new_task_queues
 
-    def get_task_queues(self) -> list[queue.Queue]:
-        return self.task_queues
-
     def build_queues(self, workers_amount: Union[str | int]) -> list[queue.Queue]:
         task_queues = [queue.Queue() for _ in range(int(workers_amount))]
         self.set_task_queues(task_queues)
@@ -35,7 +32,7 @@ class Worker(IWorker):
     def run(self):
         while True:
             try:
-                item = self.task_queue.get(timeout=10)
+                item = self.task_queue.get(timeout=3)
             except queue.Empty:
                 break
 
@@ -46,6 +43,7 @@ class Worker(IWorker):
 class Dispatcher(IDispatcher):
 
     def __init__(self, workers_amount: Union[str | int], task_queues: Optional[list[queue.Queue]]):
+        self.threads = []
         self.workers_amount = int(workers_amount)
         self.task_queues = task_queues
 
@@ -54,11 +52,10 @@ class Dispatcher(IDispatcher):
             self.task_queues[i % self.workers_amount].put(item)
 
     def create_and_run_threads(self, worker_factory: IWorkerFactory):
-        threads = []
         for i in range(self.workers_amount):
             worker = worker_factory.build_worker(
                 i, self.task_queues[i], process_item)
             thread = threading.Thread(target=worker.run)
             thread.start()
-            threads.append(thread)
-        return threads
+            self.threads.append(thread)
+        return self.threads

@@ -1,4 +1,4 @@
-from controllers.credits_billing_controller import credits_billing_blueprint
+from app.controllers.credits_billing_controller import credits_billing_blueprint
 
 
 def register_blueprints(app):

@@ -1,5 +1,5 @@
 from functools import wraps
-from interfaces.payclub_interface import IPayclubRepository, IPayclubService
+from app.interfaces.payclub_interface import IPayclubRepository, IPayclubService
 
 token_manager_instance = None
 
@@ -7,9 +7,9 @@ token_manager_instance = None
 def token_manager_singleton():
     global token_manager_instance
     if not token_manager_instance:
-        from services.token_manager import TokenManager
-        from repositories.payclub_repository import PayclubRepository
-        from services.payclub import PayclubService
+        from app.services.token_manager import TokenManager
+        from app.repositories.payclub_repository import PayclubRepository
+        from app.services.payclub import PayclubService
 
         payclub_repository: IPayclubRepository = PayclubRepository()
         payclub_service: IPayclubService = PayclubService(payclub_repository)

@@ -1,8 +1,8 @@
-from services.thread_pool import Queue, Dispatcher
-from factories.worker_factory import WorkerFactory
-from configs.environments import WORKERS_AMOUNT
-from configs.logger import logger
-from interfaces.billing_interface import IBilling
+from app.services.thread_pool import Queue, Dispatcher
+from app.factories.worker_factory import WorkerFactory
+from app.configs.environments import WORKERS_AMOUNT
+from app.configs.logger import logger
+from app.interfaces.billing_interface import IBilling
 
 
 class Billing(IBilling):

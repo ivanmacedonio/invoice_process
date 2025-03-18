@@ -14,10 +14,6 @@ class IQueue(ABC):
         pass
 
     @abstractmethod
-    def get_task_queues(self):
-        pass
-
-    @abstractmethod
     def build_queues(self, workers_amount):
         if not workers_amount:
             raise TypeError('workers_amount is required')
