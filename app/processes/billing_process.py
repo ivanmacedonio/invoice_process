@@ -1,7 +1,8 @@
 from app.repositories.payclub_repository import PayclubRepository
-from app.services.billing import Billing
+from app.services.billing import BillingFacade
 from app.services.payclub import PayclubService
 from app.decorators.error_handling_provider import error_handling_provider
+from app.configs.environments import WORKERS_AMOUNT
 
 
 def setup_and_get_payclub_instance():
@@ -12,7 +13,6 @@ def setup_and_get_payclub_instance():
 
 def get_transactions_strategy(custom_dates: dict):
     payclub_instance = setup_and_get_payclub_instance()
-
     # query README.md to view the wished format of the dates
     dates_were_received = all(key in custom_dates for key in [
                               'dateFrom', 'dateTo'])
@@ -23,9 +23,9 @@ def get_transactions_strategy(custom_dates: dict):
 
 
 @error_handling_provider
-def billing_facade(args):
-    transactions = get_transactions_strategy(args.to_dict())
+def billing_facade(args):  # TODO change to class
+    transactions = get_transactions_strategy(custom_dates=args.to_dict())
 
-    billing_instance = Billing()
+    billing_instance = BillingFacade(workers_amount=WORKERS_AMOUNT)
     billing_instance.set_tasks(transactions)
     billing_instance.run()
