@@ -4,29 +4,25 @@ from app.configs.environments import WORKERS_AMOUNT
 from app.configs.logger import logger
 from app.interfaces.billing_interface import IBilling, IQueueManager, ITaskDispatcher, IThreadManager
 
+
 class BillingFacade(IBilling):
-    def __init__(self, workers_amount):
+    def __init__(self, workers_amount, queue_manager, task_dispatcher, thread_manager, factory):
         self.tasks = []
         self.workers_amount = workers_amount
-        self.queue_manager = QueueManager(workers_amount)
-        self.thread_manager = None
-        self.task_dispatcher = None
+        self.queue_manager = queue_manager
+        self.thread_manager = thread_manager
+        self.task_dispatcher = task_dispatcher
+        self.factory = factory
 
     def set_tasks(self, tasks: list):
         self.tasks = tasks
 
     def run(self):
-        task_queues = self.queue_manager.create_queues()
-        self.task_dispatcher = TaskDispatcher(
-            self.workers_amount, task_queues)
-        self.task_dispatcher.dispatch(self.tasks)
-
-        self.thread_manager = ThreadManager(
-            self.workers_amount, task_queues)
-
-        workers_factory = WorkerFactory()
+        task_queues = self.queue_manager.create_queues(self.workers_amount)
+        self.task_dispatcher.dispatch(
+            self.workers_amount, task_queues, self.tasks)
         threads = self.thread_manager.create_and_run_threads(
-            factory=workers_factory)
+            self.workers_amount, self.factory, task_queues)
 
         for thread in threads:
             thread.join()
@@ -36,30 +32,22 @@ class BillingFacade(IBilling):
 
 
 class QueueManager(IQueueManager):
-    def __init__(self, workers_amount):
-        self.workers_amount = workers_amount
 
-    def create_queues(self):
+    def create_queues(self, workers_amount):
         queue_instance = Queue()
-        return queue_instance.build_queues(self.workers_amount)
+        return queue_instance.build_queues(workers_amount)
 
 
 class TaskDispatcher(ITaskDispatcher):
-    def __init__(self, workers_amount, task_queues):
-        self.workers_amount = workers_amount
-        self.task_queues = task_queues
 
-    def dispatch(self, tasks):
-        dispatcher = Dispatcher(self.workers_amount, self.task_queues)
+    def dispatch(self, workers_amount, queues, tasks):
+        dispatcher = Dispatcher(workers_amount, queues)
         dispatcher.dispatch(tasks)
 
 
 class ThreadManager(IThreadManager):
-    def __init__(self, workers_amount, task_queues):
-        self.workers_amount = workers_amount
-        self.task_queues = task_queues
 
-    def create_and_run_threads(self, factory):
-        dispatchers = Dispatcher(self.workers_amount, self.task_queues)
+    def create_and_run_threads(self, workers_amount, factory, queues):
+        dispatchers = Dispatcher(workers_amount, queues)
         threads = dispatchers.create_and_run_threads(factory)
         return threads

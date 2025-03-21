@@ -4,7 +4,7 @@ from typing import Union, Optional
 
 from app.configs.logger import logger
 from app.interfaces.thread_pool_interface import IQueue, IWorker, IDispatcher, IWorkerFactory
-from app.processes.process_item import process_item
+from app.processes.process_bill_facade import process_bill_facade
 
 
 class Queue(IQueue):
@@ -54,7 +54,7 @@ class Dispatcher(IDispatcher):
     def create_and_run_threads(self, worker_factory: IWorkerFactory):
         for i in range(self.workers_amount):
             worker = worker_factory.build_worker(
-                i, self.task_queues[i], process_item)
+                i, self.task_queues[i], process_bill_facade)
             thread = threading.Thread(target=worker.run)
             thread.start()
             self.threads.append(thread)

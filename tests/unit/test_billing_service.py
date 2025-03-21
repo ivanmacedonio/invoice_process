@@ -7,6 +7,37 @@ from app.services.billing import BillingFacade, QueueManager, TaskDispatcher, Th
 class TestBillingService(TestCase):
 
     def set_up_dummy_queue_manager(self):
+<<<<<<< HEAD
+        self.dummy_queue_manager = QueueManager()
+
+    def set_up_dummy_task_dispatcher(self):
+        self.dummy_task_dispatcher = TaskDispatcher()
+
+    def set_up_dummy_thread_manager(self):
+        self.dummy_thread_manager = ThreadManager()
+
+    def set_up_factory_mock(self):
+        self.dummy_factory = MagicMock()
+        self.dummy_worker = MagicMock()
+
+        self.dummy_worker.run.return_value = lambda x: x
+        self.dummy_factory.build_worker.return_value = self.dummy_worker
+
+    def setUp(self):
+        self.set_up_dummy_queue_manager()
+        self.set_up_dummy_task_dispatcher()
+        self.set_up_dummy_thread_manager()
+        self.set_up_factory_mock()
+
+        self.billing_service = BillingFacade(
+            workers_amount=2,
+            queue_manager=self.dummy_queue_manager,
+            task_dispatcher=self.dummy_task_dispatcher,
+            thread_manager=self.dummy_thread_manager,
+            factory=self.dummy_factory
+        )
+
+=======
         workers_amount = 2
         self.dummy_queue_manager = QueueManager(workers_amount)
 
@@ -21,6 +52,7 @@ class TestBillingService(TestCase):
     def setUp(self):
         self.set_up_dummy_queue_manager()
         self.billing_service = BillingFacade(workers_amount=1)
+>>>>>>> b17b2eb1935242b3a08771d8dfc1d96747898e6d
         self.dummy_tasks = ['item_a', 'item_b', 'item_c', 'item_d']
 
     def test_billing_service_set_tasks_successfully(self):
@@ -33,6 +65,27 @@ class TestBillingService(TestCase):
 
     def test_queue_manager_works_successfully(self):
         dummy_queue_manager_cpy = copy(self.dummy_queue_manager)
+<<<<<<< HEAD
+        task_queues = dummy_queue_manager_cpy.create_queues(workers_amount=2)
+
+        self.assertIsNotNone(task_queues)
+        self.assertEqual(len(task_queues), 2)  # Validamos que se creen 2 colas
+
+    def test_task_dispatcher_works_successfully(self):
+        task_queues = self.dummy_queue_manager.create_queues(workers_amount=2)
+        self.dummy_task_dispatcher.dispatch(
+            workers_amount=2, queues=task_queues, tasks=self.dummy_tasks)
+
+        for q in task_queues:
+            self.assertEqual(q.qsize(), 2)
+
+    def test_thread_manager_works_successfully(self):
+        dummy_thread_manager_cpy = copy(self.dummy_thread_manager)
+        task_queues = self.dummy_queue_manager.create_queues(workers_amount=2)
+
+        threads = dummy_thread_manager_cpy.create_and_run_threads(
+            workers_amount=2, factory=self.dummy_factory, queues=task_queues)
+=======
         dummy_queue = dummy_queue_manager_cpy.create_queues()
 
         self.assertIsNotNone(dummy_queue)
@@ -63,10 +116,14 @@ class TestBillingService(TestCase):
 
         threads = dummy_thread_manager_cpy.create_and_run_threads(
             dummy_factory)
+>>>>>>> b17b2eb1935242b3a08771d8dfc1d96747898e6d
 
         for t in threads:
             t.join()
             self.assertIsNotNone(t)
             self.assertFalse(t.is_alive())
+<<<<<<< HEAD
+=======
 
         self.assertEqual(len(dummy_thread_manager_cpy.task_queues), 2)
+>>>>>>> b17b2eb1935242b3a08771d8dfc1d96747898e6d

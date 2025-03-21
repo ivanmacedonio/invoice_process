@@ -1,7 +1,8 @@
 from app.repositories.payclub_repository import PayclubRepository
-from app.services.billing import BillingFacade
+from app.services.billing import BillingFacade, QueueManager, TaskDispatcher, ThreadManager, WorkerFactory
 from app.services.payclub import PayclubService
 from app.decorators.error_handling_provider import error_handling_provider
+from app.configs.environments import WORKERS_AMOUNT
 from app.configs.environments import WORKERS_AMOUNT
 
 
@@ -23,9 +24,14 @@ def get_transactions_strategy(custom_dates: dict):
 
 
 @error_handling_provider
-def billing_facade(args):  # TODO change to class
+def billing_process_facade(args):
     transactions = get_transactions_strategy(custom_dates=args.to_dict())
+    queue_manager = QueueManager()
+    task_dispatcher = TaskDispatcher()
+    thread_manager = ThreadManager()
+    factory = WorkerFactory()
 
-    billing_instance = BillingFacade(workers_amount=WORKERS_AMOUNT)
+    billing_instance = BillingFacade(
+        WORKERS_AMOUNT, queue_manager, task_dispatcher, thread_manager, factory)
     billing_instance.set_tasks(transactions)
     billing_instance.run()

@@ -1,8 +1,9 @@
 
+import uuid
+from datetime import datetime
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, func
-from sqlalchemy.types import DateTime, Uuid, String, BigInteger
-from datetime import datetime
 
 
 class Base(DeclarativeBase):
@@ -12,7 +13,8 @@ class Base(DeclarativeBase):
 class Factura(Base):
     __tablename__ = "facturas"
 
-    id: Mapped[Uuid] = mapped_column(primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID, primary_key=True, default=uuid.uuid4())
     facturante_id = mapped_column(ForeignKey("facturantes.id"))
     facturante = relationship(
         "Facturante", uselist=False, back_populates="facturas")
@@ -22,8 +24,8 @@ class Factura(Base):
     venta = relationship("Venta", uselist=False, back_populates="factura")
     cae_id = mapped_column(ForeignKey("caes.id"))
     cae = relationship("Cae", uselist=False, back_populates="facturas")
-    tipo_comprobante: Mapped[BigInteger] = mapped_column()
-    num_comprobante: Mapped[BigInteger] = mapped_column()
-    punto_de_venta: Mapped[BigInteger] = mapped_column()
-    fecha_factura: Mapped[DateTime] = mapped_column(default=func.now())
-    payclub_payment_id: Mapped[String] = mapped_column()
+    tipo_comprobante: Mapped[int] = mapped_column()
+    num_comprobante: Mapped[int] = mapped_column()
+    punto_de_venta: Mapped[int] = mapped_column()
+    fecha_factura: Mapped[datetime] = mapped_column(default=func.now())
+    payclub_payment_id: Mapped[str] = mapped_column()

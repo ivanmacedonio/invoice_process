@@ -48,7 +48,8 @@ class PayclubRepository(IPayclubRepository):
         response = requests.post(
             url=query_payload.url, headers=query_payload.headers, auth=authentication_method, data=query_payload.body)
 
-        logger.info(f'Payclub token retrieve response: {str(response)}')
+        logger.info(
+            f'Payclub token retrieve response status code: {str(response.status_code)}')
 
         if response.status_code > 299:
             raise PayclubRequestException(response)
