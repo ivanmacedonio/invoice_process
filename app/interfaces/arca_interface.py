@@ -26,5 +26,5 @@ class IInstanceManager(ABC):
 
 class IBuildManager(ABC):
     @abstractmethod
-    def build_invoice(self, transaction, invoicer_data, arca_instance):
+    def build_type_b_invoice(self, transaction, invoicer_data, arca_instance):
         pass
