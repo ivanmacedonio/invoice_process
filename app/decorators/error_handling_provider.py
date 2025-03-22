@@ -1,6 +1,7 @@
 import traceback
 import requests
 from app.configs.logger import logger
+from sqlalchemy.exc import SQLAlchemyError, DisconnectionError, IntegrityError, DatabaseError, ArgumentError
 
 
 def error_handling_provider(func):
@@ -27,6 +28,26 @@ def error_handling_provider(func):
         except requests.RequestException as re:
             logger.error(traceback.format_exc())
             logger.error(f'Unexpected request error: {re}')
+
+        except SQLAlchemyError as sqle:
+            logger.error(traceback.format_exc())
+            logger.error(f'Unexpected SQLAlchemy error: {sqle}')
+
+        except DisconnectionError as sqlderr:
+            logger.error(traceback.format_exc())
+            logger.error(f'SQLAlchemy lost the database connection: {sqlderr}')
+
+        except IntegrityError as sqlierr:
+            logger.error(traceback.format_exc())
+            logger.error(f'SQLAlchemy Unexpected Integrity error: {sqlierr}')
+
+        except DatabaseError as sqldberr:
+            logger.error(traceback.format_exc())
+            logger.error(f'SQLAlchemy Unexpected Database error: {sqldberr}')
+
+        except ArgumentError as sqlargerr:
+            logger.error(traceback.format_exc())
+            logger.error(f'SQLAlchemy Unexpected Database error: {sqlargerr}')
 
         except Exception as e:
             logger.error(traceback.format_exc())

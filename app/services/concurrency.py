@@ -2,10 +2,10 @@ from app.services.thread_pool import Queue, Dispatcher
 from app.factories.worker_factory import WorkerFactory
 from app.configs.environments import WORKERS_AMOUNT
 from app.configs.logger import logger
-from app.interfaces.billing_interface import IBilling, IQueueManager, ITaskDispatcher, IThreadManager
+from app.interfaces.concurrency_interface import IProcessRunner, IQueueManager, ITaskDispatcher, IThreadManager
 
 
-class ProcessRunner(IBilling):
+class ProcessRunner(IProcessRunner):
     def __init__(self, workers_amount, queue_manager, task_dispatcher, thread_manager, factory):
         self.tasks = []
         self.workers_amount = workers_amount

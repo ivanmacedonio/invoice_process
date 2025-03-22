@@ -4,9 +4,10 @@ from sqlalchemy import exc
 from app.entities.models.models import Factura, Facturante, Cliente, Venta
 from uuid import uuid4
 from app.decorators.transactional import transactional
+from app.interfaces.bill_repository_interface import IBillRepository
 
 
-class BillRepository:
+class BillRepository(IBillRepository):
     def __init__(self, session: Session):
         self._session = session
 

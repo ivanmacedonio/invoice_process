@@ -1,8 +1,9 @@
 import time
 from app.configs.logger import logger
+from app.interfaces.token_manager_interface import ITokenManager
 
 
-class TokenManager:
+class TokenManager(ITokenManager):
 
     def __init__(self, payclub_service):
         self._cached_token = None

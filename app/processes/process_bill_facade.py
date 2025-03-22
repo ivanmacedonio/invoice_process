@@ -5,6 +5,7 @@ from app.services.arca import BillingService, BuildManager, InstanceManager
 from app.repositories.bill_repository import BillRepository
 from sqlalchemy.exc import IntegrityError, DisconnectionError, SQLAlchemyError, DatabaseError, ArgumentError
 from threading import Lock
+from app.decorators.error_handling_provider import error_handling_provider
 
 
 _lock = Lock()
@@ -36,28 +37,10 @@ def get_or_create_arca_instance():
     return SingletonManager.get_or_create_instance('arca_instance', lambda: BillingService(instance_manager, builder_manager, repository))
 
 
+@error_handling_provider
 def process_bill_facade(transaction):
-    try:
-        with _lock:
-            arca_instance = get_or_create_arca_instance()
-        bill_response = arca_instance.bill(transaction)
-
-    except SQLAlchemyError as sqle:
-        logger.error(traceback.format_exc())
-        logger.error(f'Unexpected SQLAlchemy error: {sqle}')
-
-    except DisconnectionError as sqlderr:
-        logger.error(traceback.format_exc())
-        logger.error(f'SQLAlchemy lost the database connection: {sqlderr}')
-
-    except IntegrityError as sqlierr:
-        logger.error(traceback.format_exc())
-        logger.error(f'SQLAlchemy Unexpected Integrity error: {sqlierr}')
-
-    except DatabaseError as sqldberr:
-        logger.error(traceback.format_exc())
-        logger.error(f'SQLAlchemy Unexpected Database error: {sqldberr}')
-
-    except ArgumentError as sqlargerr:
-        logger.error(traceback.format_exc())
-        logger.error(f'SQLAlchemy Unexpected Database error: {sqlargerr}')
+    with _lock:
+        arca_instance = get_or_create_arca_instance()
+    bill_response = arca_instance.bill(transaction)
+    logger.info(
+        f'Billing response for transaction ID {transaction.get('txid', None)} -> {bill_response} ')

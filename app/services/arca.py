@@ -3,29 +3,30 @@ from app.entities.dtos.arca_bill_dto import ARCABillDTO
 from datetime import datetime
 from dataclasses import asdict
 from app.utils.validate_fields import validate_fields
+from app.interfaces.arca_interface import IBillingService, IBuildManager, IInstanceManager
+from app.interfaces.bill_repository_interface import IBillRepository
 
 
-class BillingService:
-    def __init__(self, instance_manager, builder_manager, repository):
+class BillingService(IBillingService):
+    def __init__(self, instance_manager: IInstanceManager, builder_manager: IBuildManager, repository: IBillRepository) -> None:
         self.instance_manager = instance_manager
         self.builder_manager = builder_manager
         self.repository = repository
 
-    def bill(self, transaction):
+    def bill(self, transaction: dict) -> dict:
         invoicer_data = self.repository.get_unique_invoicer()
-        arca_instance = self.instance_manager.get_or_create_instance(
+        arca_instance: Afip = self.instance_manager.get_or_create_instance(
             invoicer_data)
         invoice = self.builder_manager.build_invoice(
             transaction, invoicer_data, arca_instance)
-        print(transaction['product'])
-        # arca_response = self._instance.ElectronicBilling.createVoucher(invoice)
-        # print(arca_response)
+        arca_response = arca_instance.ElectronicBilling.createVoucher(invoice)
+        return arca_response
 
 
-class InstanceManager:
+class InstanceManager(IInstanceManager):
     _instance = None
 
-    def get_or_create_instance(self, invoicer_data):
+    def get_or_create_instance(self, invoicer_data: dict) -> Afip:
         if self._instance is None:
             secret_key = invoicer_data.get('arca_secret_key', None)
             certify = invoicer_data.get('arca_certify', None)
@@ -35,15 +36,15 @@ class InstanceManager:
                     "secret_key, certify and cuit are required to initializate ARCA")
             self._instance = Afip({
                 "CUIT": 20409378472,
-                # "cert": certify,
-                # "key": secret_key
+                "cert": certify,
+                "key": secret_key
             })
         return self._instance
 
 
-class BuildManager:
+class BuildManager(IBuildManager):
 
-    def build_invoice(self, transaction, invoicer_data, arca_instance):
+    def build_invoice(self, transaction: dict, invoicer_data: dict, arca_instance: Afip) -> dict:
         ptoVta = invoicer_data.get("punto_de_venta", None)
         BILL_TYPE_B_CODE = 6
         last_voucher_number = arca_instance.ElectronicBilling.getLastVoucher(

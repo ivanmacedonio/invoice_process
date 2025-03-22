@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABC
 
 
-class IBilling(ABC):
+class IProcessRunner(ABC):
 
     @abstractmethod
     def __init__(self, workers_amount, queue_manager, task_dispatcher, thread_manager, factory):
