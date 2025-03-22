@@ -1,6 +1,6 @@
 from app.configs.logger import logger
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from app.configs.environments import DATABASE_DRIVER, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_HOST, DATABASE_PORT, DATABASE_NAME
 from sqlalchemy.exc import OperationalError
 
@@ -27,12 +27,14 @@ class Database:
         if self._db is None:
             connection_string = self.create_connection_string()
             self._db = create_engine(connection_string)
+            self._session_factory = sessionmaker(bind=self._db)
         return self._db
 
     def get_local_session(self):
         try:
-            engine = self.get_or_create_db()
-            return sessionmaker(bind=engine)
+            self.get_or_create_db()
+            session = scoped_session(self._session_factory)
+            return session
         except OperationalError as operr:
             logger.error(
                 f'Unexpected error while trying to make the engine: {str(operr)}')

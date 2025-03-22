@@ -1,31 +1,46 @@
 import traceback
 from app.configs.logger import logger
 from app.services.database import Database
-from app.services.bill import InvoiceService
-from app.services.arca import Arca
+from app.services.arca import BillingService, BuildManager, InstanceManager
+from app.repositories.bill_repository import BillRepository
 from sqlalchemy.exc import IntegrityError, DisconnectionError, SQLAlchemyError, DatabaseError, ArgumentError
+from threading import Lock
 
 
-def get_or_create_database():
-    return Database().get_local_session()
+_lock = Lock()
 
 
-def create_and_get_bill_service_instance():
-    bill_service = InvoiceService()
-    return bill_service
+class SingletonManager:
+    _instances = {}
+
+    @classmethod
+    def get_or_create_instance(cls, name: str, create_fn):
+        if name not in cls._instances:
+            cls._instances[name] = create_fn()
+        return cls._instances[name]
 
 
-def create_and_get_arca_instance():
-    arca_instance = Arca()
-    return arca_instance
+def get_or_create_session():
+    return SingletonManager.get_or_create_instance('database', lambda: Database().get_local_session())
 
 
-def process_bill_facade(item):
+def get_or_create_repository():
+    session = get_or_create_session()
+    return SingletonManager.get_or_create_instance('bill_repository', lambda: BillRepository(session=session))
+
+
+def get_or_create_arca_instance():
+    repository = get_or_create_repository()
+    instance_manager = InstanceManager()
+    builder_manager = BuildManager()
+    return SingletonManager.get_or_create_instance('arca_instance', lambda: BillingService(instance_manager, builder_manager, repository))
+
+
+def process_bill_facade(transaction):
     try:
-        bill_service = create_and_get_bill_service_instance()
-        arca_instance = create_and_get_arca_instance()
-
-        bill_service.execute_billing_with_arca(arca_instance)
+        with _lock:
+            arca_instance = get_or_create_arca_instance()
+        bill_response = arca_instance.bill(transaction)
 
     except SQLAlchemyError as sqle:
         logger.error(traceback.format_exc())

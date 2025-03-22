@@ -3,13 +3,6 @@ from typing import List
 
 
 @dataclass
-class Iva:
-    Id: int
-    BaseImp: float
-    Importe: float
-
-
-@dataclass
 class ARCABillDTO:
     CantReg: int
     PtoVta: str
@@ -31,4 +24,4 @@ class ARCABillDTO:
     ImpTrib: float
     MonId: str
     MonCotiz: float
-    Iva: List[Iva]
+    Iva: List

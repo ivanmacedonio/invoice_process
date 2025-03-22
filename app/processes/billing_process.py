@@ -1,5 +1,5 @@
 from app.repositories.payclub_repository import PayclubRepository
-from app.services.billing import BillingFacade, QueueManager, TaskDispatcher, ThreadManager, WorkerFactory
+from app.services.concurrency import ProcessRunner, QueueManager, TaskDispatcher, ThreadManager, WorkerFactory
 from app.services.payclub import PayclubService
 from app.decorators.error_handling_provider import error_handling_provider
 from app.configs.environments import WORKERS_AMOUNT
@@ -31,7 +31,7 @@ def billing_process_facade(args):
     thread_manager = ThreadManager()
     factory = WorkerFactory()
 
-    billing_instance = BillingFacade(
+    concurrent_process_runner = ProcessRunner(
         WORKERS_AMOUNT, queue_manager, task_dispatcher, thread_manager, factory)
-    billing_instance.set_tasks(transactions)
-    billing_instance.run()
+    concurrent_process_runner.set_tasks(transactions)
+    concurrent_process_runner.run()

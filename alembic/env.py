@@ -1,8 +1,4 @@
-from app.entities.models.bill import Base as BaseBill
-from app.entities.models.cae import Base as BaseCae
-from app.entities.models.client import Base as BaseClient
-from app.entities.models.invoicer import Base as BaseInvoicer
-from app.entities.models.sale import Base as BaseSale
+from app.entities.models.models import Base
 
 
 from logging.config import fileConfig
@@ -25,13 +21,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = [
-    BaseCae.metadata,
-    BaseClient.metadata,
-    BaseInvoicer.metadata,
-    BaseBill.metadata,
-    BaseSale.metadata,
-]
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

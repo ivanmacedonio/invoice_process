@@ -27,7 +27,12 @@ def upgrade():
         sa.Column('inicio_actividades', sa.DateTime(), nullable=False),
         sa.Column('ii_bb', sa.Integer(), nullable=False),
         sa.Column('telefono', sa.String(), nullable=False),
-        sa.Column('email', sa.String(), nullable=False)
+        sa.Column('email', sa.String(), nullable=False),
+        sa.Column('numero_cae', sa.String(), nullable=False),
+        sa.Column('punto_de_venta', sa.String(), nullable=False),
+        sa.Column('fecha_vencimiento_cae', sa.DateTime(), nullable=False),
+        sa.Column('arca_secret_key', sa.String(), nullable=False),
+        sa.Column('arca_certify', sa.String(), nullable=False),
     )
 
     op.create_table(
@@ -43,21 +48,12 @@ def upgrade():
     )
 
     op.create_table(
-        'caes',
-        sa.Column('id', sa.UUID(), primary_key=True, default=uuid.uuid4),
-        sa.Column('cae', sa.String(), nullable=False),
-        sa.Column('fecha_vencimiento', sa.DateTime(), nullable=False)
-    )
-
-    op.create_table(
         'facturas',
         sa.Column('id', sa.UUID(), primary_key=True, default=uuid.uuid4),
         sa.Column('facturante_id', sa.UUID(), sa.ForeignKey(
             'facturantes.id'), nullable=False),
         sa.Column('cliente_id', sa.UUID(), sa.ForeignKey(
             'clientes.id'), nullable=False),
-        sa.Column('cae_id', sa.UUID(), sa.ForeignKey(
-            'caes.id'), nullable=False),
         sa.Column('tipo_comprobante', sa.Integer(), nullable=False),
         sa.Column('num_comprobante', sa.Integer(), nullable=False),
         sa.Column('punto_de_venta', sa.Integer(), nullable=False),
@@ -83,8 +79,6 @@ def upgrade():
                           'facturantes', ['facturante_id'], ['id'])
     op.create_foreign_key('fk_cliente_factura', 'facturas',
                           'clientes', ['cliente_id'], ['id'])
-    op.create_foreign_key('fk_cae_factura', 'facturas',
-                          'caes', ['cae_id'], ['id'])
     op.create_foreign_key('fk_venta_factura', 'ventas',
                           'facturas', ['factura_id'], ['id'])
 

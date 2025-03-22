@@ -1,0 +1,63 @@
+INSERT INTO ventas (
+    id, factura_id, inicio_servicios, fin_servicios, fecha_de_pago, 
+    importe_total, importe_neto, importe_iva
+) 
+VALUES (
+    '757a38fe-e82d-43bf-8685-56b1e2999fbb',
+    '40be2d82-c5be-47c1-b4e4-179c1314c2ee',  -- reemplaza con el id real de la factura insertada
+    '2023-03-21 00:00:00', 
+    '2023-03-21 23:59:59', 
+    '2023-03-22 00:00:00', 
+    1000,          -- Importe total
+    800,           -- Importe neto
+    200            -- Importe IVA
+);
+
+INSERT INTO facturas (
+    id, facturante_id, cliente_id, tipo_comprobante, num_comprobante, 
+    punto_de_venta, fecha_factura, payclub_payment_id
+) 
+VALUES (
+    '40be2d82-c5be-47c1-b4e4-179c1314c2ee',
+    'c552d3d3-8616-4cc3-b511-e423a9ac0686',  -- reemplaza con el id real del facturante insertado
+    '2dac1b25-9fb0-4374-b984-9a93d2d08792',     -- reemplaza con el id real del cliente insertado
+    1,                -- Tipo de comprobante (por ejemplo, factura A)
+    12345,            -- Número de comprobante
+    1,                -- Punto de venta (por ejemplo, 1)
+    '2023-03-21 12:00:00', 
+    'payclub_id_123'
+);
+
+INSERT INTO clientes (
+    id, nombre_completo, email, documento, documento_tipo, provincia, 
+    domicilio, codigo_postal
+) 
+VALUES (
+    '2dac1b25-9fb0-4374-b984-9a93d2d08792', 
+    'Juan Pérez', 
+    'juan.perez@ejemplo.com', 
+    '12345678', 
+    'DNI', 
+    'Buenos Aires', 
+    'Calle Ficticia 123', 
+    '1000'
+);
+
+INSERT INTO facturantes (
+    id, cuit, razon_social, inicio_actividades, ii_bb, telefono, email, 
+    numero_cae, fecha_vencimiento_cae, arca_secret_key, arca_certify
+) 
+VALUES (
+    'c552d3d3-8616-4cc3-b511-e423a9ac0686',
+    '20-12345678-9', 
+    'Empresa Ejemplo S.A.', 
+    '2023-01-01 00:00:00', 
+    1234, 
+    '1234-5678', 
+    'empresa@ejemplo.com', 
+    'CAE123456789', 
+    '2025-01-01 00:00:00', 
+    'secreto_clave', 
+    'certificado_clave'
+);
+

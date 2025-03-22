@@ -3,9 +3,9 @@ services:
     image: postgres:16
     container_name: postgres_db
     environment:
-      POSTGRES_USER: payclub
-      POSTGRES_PASSWORD: wf,b6q)Y35cup;Ev}= 
-      POSTGRES_DB: payclub
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pg_test_111
+      POSTGRES_DB: payclub_test
     ports:
       - "5433:5432"
     volumes:

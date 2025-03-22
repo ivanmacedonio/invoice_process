@@ -1,7 +1,7 @@
 from copy import copy
 from unittest import TestCase
 from unittest.mock import MagicMock
-from app.services.billing import BillingFacade, QueueManager, TaskDispatcher, ThreadManager
+from app.services.concurrency import ProcessRunner, QueueManager, TaskDispatcher, ThreadManager
 
 
 class TestBillingService(TestCase):
@@ -28,7 +28,7 @@ class TestBillingService(TestCase):
         self.set_up_dummy_thread_manager()
         self.set_up_factory_mock()
 
-        self.billing_service = BillingFacade(
+        self.billing_service = ProcessRunner(
             workers_amount=2,
             queue_manager=self.dummy_queue_manager,
             task_dispatcher=self.dummy_task_dispatcher,

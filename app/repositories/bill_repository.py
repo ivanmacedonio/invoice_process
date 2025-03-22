@@ -1,11 +1,7 @@
 from sqlalchemy.orm.session import Session
 from app.entities.dtos.invoice_payloads_dto import ClientDTO, SellDTO, BillDTO
 from sqlalchemy import exc
-from app.entities.models.bill import Factura
-from app.entities.models.client import Cliente
-from app.entities.models.invoicer import Facturante
-from app.entities.models.sale import Venta
-from app.entities.models.cae import Cae
+from app.entities.models.models import Factura, Facturante, Cliente, Venta
 from uuid import uuid4
 from app.decorators.transactional import transactional
 
@@ -18,13 +14,7 @@ class BillRepository:
         invoicer_instance = self._session.query(Facturante).one_or_none()
         if not invoicer_instance:
             raise exc.NoResultFound("No results found for invoicer_instance")
-        return invoicer_instance
-
-    def get_unique_cae(self):
-        cae_instance = self._session.query(Cae).one_or_none
-        if not cae_instance:
-            raise exc.NoResultFound("No results found for cae_instance")
-        return cae_instance
+        return invoicer_instance.__dict__
 
     def get_or_create_client(self, payload: ClientDTO):
         client_instance = self._session.query(Cliente).filter(
@@ -50,14 +40,12 @@ class BillRepository:
         invoicer = self.get_unique_invoicer()
         client = self.get_or_create_client(client_payload)
         sale = self.create_and_get_sale(sell_payload)
-        cae = self.get_unique_cae()
 
         bill_instance = Factura(
             id=uuid4(),
             facturante_id=invoicer.id,
             cliente_id=client.id,
             venta_id=sale.id,
-            cae_id=cae.id,
             **bill_payload.dict()
         )
         self._session.add(bill_instance)

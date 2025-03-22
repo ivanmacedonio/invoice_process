@@ -1,8 +1,7 @@
 import threading
 import queue
+from time import sleep
 from typing import Union, Optional
-
-from app.configs.logger import logger
 from app.interfaces.thread_pool_interface import IQueue, IWorker, IDispatcher, IWorkerFactory
 from app.processes.process_bill_facade import process_bill_facade
 
@@ -37,6 +36,7 @@ class Worker(IWorker):
                 break
 
             self.process_method(item)
+            # sleep(3)
             self.task_queue.task_done()
 
 
