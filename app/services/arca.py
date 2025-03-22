@@ -1,4 +1,5 @@
 from afip import Afip
+from app.configs.logger import logger
 from app.entities.dtos.arca_bill_dto import ARCABillDTO
 from datetime import datetime
 from dataclasses import asdict
@@ -38,12 +39,15 @@ class InstanceManager(IInstanceManager):
                 if not all([secret_key, certify, cuit]):
                     raise ValueError(
                         "secret_key, certify and cuit are required to initializate ARCA")
+
+                logger.info("Initializing Afip instance...")
                 self._instance = Afip({
                     "CUIT": formatted_cuit,
                     "cert": certify,
                     "key": secret_key
                 })
             return self._instance
+
 
 class BuildManager(IBuildManager):
 
