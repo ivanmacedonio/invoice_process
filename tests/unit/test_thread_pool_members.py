@@ -3,7 +3,7 @@ import queue
 from copy import copy
 from unittest import TestCase
 from app.factories.worker_factory import WorkerFactory
-from app.services.thread_pool import Worker, Dispatcher, Queue
+from app.services.concurrency import Worker, Dispatcher, Queue
 from app.interfaces.thread_pool_interface import IQueue
 
 
@@ -99,4 +99,3 @@ class TestThreadPool(TestCase):
 
         for i in range(dispatcher_cpy.workers_amount):
             self.assertFalse(threads[i].is_alive())
-
