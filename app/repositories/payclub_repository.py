@@ -15,6 +15,7 @@ class PayclubRequestException(requests.RequestException):
 
     def get_error_message(self):
         try:
+            logger.error(f'Payclub error response: {self.response.text}')
             return self.response.json().get("error", {}).get("serviceErrorMessage", "No error message provided")
         except ValueError:
             return "No error message provided"

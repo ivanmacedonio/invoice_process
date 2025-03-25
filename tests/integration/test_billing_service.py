@@ -30,6 +30,6 @@ class TestBillingService(TestCase):
             transaction=dummy_transaction
         )
 
-        self.assertTrue('CAE' in arca_response)
-        self.assertTrue('CAEFchVto' in arca_response)
-        self.assertTrue(isinstance(arca_response, dict))
+        self.assertTrue('CAE' in arca_response['message'])
+        self.assertTrue('CAEFchVto' in arca_response['message'])
+        self.assertTrue(isinstance(arca_response['message'], dict))

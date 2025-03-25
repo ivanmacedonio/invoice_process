@@ -2,7 +2,7 @@ from app.configs.logger import logger
 from afip import Afip
 from app.services.database import Database
 from app.services.arca import BillingService, BuildManager, InstanceManager
-from app.repositories.bill_repository import BillRepository
+from app.repositories.bill_repository import BillRepository, IBillRepository
 from app.decorators.error_handling_provider import error_handling_provider
 
 
@@ -34,7 +34,16 @@ def get_or_create_arca_instance():
 
 @error_handling_provider
 def process_transaction_facade(transaction):
+    # billing stuff
     arca_instance = get_or_create_arca_instance()
-    bill_response = arca_instance.bill(transaction)
-    logger.info(
-        f'Billing response for transaction ID {transaction.get('txid', None)} -> {bill_response} ')
+    arca_response = arca_instance.bill(transaction)
+
+    # querying stuff
+    repository: IBillRepository = get_or_create_repository()
+    # bill_creation_querie_response = repository.create_bill()
+
+    bill_summary: dict = {
+        "payclub_transaction_id":  transaction.get('txid', "Payclub ID does not provided"),
+        "arca_response": arca_response['message']
+    }
+    logger.info(f'Billing response: {bill_summary}')
