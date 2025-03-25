@@ -1,4 +1,5 @@
 from app.configs.logger import logger
+from afip import Afip
 from app.services.database import Database
 from app.services.arca import BillingService, BuildManager, InstanceManager
 from app.repositories.bill_repository import BillRepository
@@ -26,7 +27,7 @@ def get_or_create_repository():
 
 def get_or_create_arca_instance():
     repository = get_or_create_repository()
-    instance_manager = InstanceManager()
+    instance_manager = InstanceManager(billing_processor=Afip)
     builder_manager = BuildManager()
     return SingletonManager.get_or_create_instance('arca_instance', lambda: BillingService(instance_manager, builder_manager, repository))
 

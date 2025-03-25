@@ -26,6 +26,10 @@ class BillingService(IBillingService):
 
 
 class InstanceManager(IInstanceManager):
+
+    def __init__(self, billing_processor):
+        self.billing_processor = billing_processor
+
     _instance_lock = Lock()
     _instance = None
 
@@ -41,7 +45,7 @@ class InstanceManager(IInstanceManager):
                         "secret_key, certify and cuit are required to initializate ARCA")
 
                 logger.info("Initializing Afip instance...")
-                self._instance = Afip({
+                self._instance = self.billing_processor({
                     "CUIT": formatted_cuit,
                     "cert": certify,
                     "key": secret_key
@@ -52,15 +56,18 @@ class InstanceManager(IInstanceManager):
 class BuildManager(IBuildManager):
 
     def build_type_b_invoice(self, transaction: dict, invoicer_data: dict, arca_instance: Afip) -> dict:
-        ptoVta = invoicer_data.get("punto_de_venta", None)
+        ptoVta = int(invoicer_data.get("punto_de_venta", None))
         BILL_TYPE_B_CODE = 6
+
         last_voucher_number = arca_instance.ElectronicBilling.getLastVoucher(
             ptoVta, BILL_TYPE_B_CODE)
         current_voucher_name = last_voucher_number + 1
         today_formatted = int(datetime.today().strftime("%Y%m%d"))
-        importe_gravado = transaction.get('amount', None)
+
+        importe_gravado = int(transaction.get('amount', None))
         importe_excento_iva = 0
-        importe_iva = 21
+        iva_percentage = 0.21
+        importe_iva = importe_gravado * iva_percentage
 
         validate_fields(target_fields={
             "transaction": transaction,

@@ -18,6 +18,10 @@ class IBillingService(ABC):
 
 class IInstanceManager(ABC):
     @abstractmethod
+    def __init__(self, billing_processor):
+        pass
+
+    @abstractmethod
     def get_or_create_instance(self, invoicer_data):
         if not invoicer_data:
             raise ValueError('invoicer_data arg is missing')

@@ -60,7 +60,8 @@ class TestArcaCustomService(TestCase):
 
         importe_gravado = self.dummy_transaction['amount']
         importe_excento_iva = 0
-        importe_iva = 21
+        iva_percentage = 0.21
+        importe_iva = importe_gravado * iva_percentage
         importe_total = importe_gravado + importe_excento_iva + importe_iva
 
         self.assertEqual(builded_invoice['CantReg'], 1)
@@ -86,3 +87,26 @@ class TestArcaCustomService(TestCase):
         self.assertEqual(builded_invoice['Iva'], [{
             'Id': 5, 'BaseImp': 999, 'Importe': importe_iva
         }])
+
+    def test_instance_manager_works_as_singleton_manager(self):
+        self.mock_billing_processor = MagicMock()
+        self.mock_afip_instance = MagicMock()
+        self.mock_billing_processor.return_value = self.mock_afip_instance
+
+        self.instance_manager = InstanceManager(self.mock_billing_processor)
+
+    def test_singleton_instance_creation(self):
+        invoicer_data = {
+            'arca_secret_key': 'secret_key_123',
+            'arca_certify': 'certify_123',
+            'cuit': '20-40937847-2'
+        }
+
+        instance1 = self.mocked_instance_manager.get_or_create_instance(
+            invoicer_data)
+
+        instance2 = self.mocked_instance_manager.get_or_create_instance(
+            invoicer_data)
+
+        self.assertIs(instance1, instance2,
+                      "Instances are not the same. Singleton pattern is broken.")
