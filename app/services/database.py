@@ -30,7 +30,7 @@ class Database:
             self._session_factory = sessionmaker(bind=self._db)
         return self._db
 
-    def get_local_session(self):
+    def create_session(self):
         try:
             self.get_or_create_db()
             session = scoped_session(self._session_factory)

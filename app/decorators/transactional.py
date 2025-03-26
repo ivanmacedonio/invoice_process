@@ -8,11 +8,13 @@ logger = logging.getLogger(__name__)
 def transactional(func):
     @wraps(func)
     def wrapper(self, *args, **kwargs):
+        session = self._session
         try:
-            with self._session.begin():
-                return func(self, *args, **kwargs)
+            result = func(self, *args, **kwargs)
+            session.commit()
+            return result
         except SQLAlchemyError as e:
-            self._session.rollback()
+            session.rollback()
             logger.error(
                 f"Unexpected SQLAlchemy error, rollback executed: {str(e)}")
             raise

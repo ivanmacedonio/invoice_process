@@ -18,41 +18,47 @@ class BillRepository(IBillRepository):
         return invoicer_instance.__dict__
 
     def get_or_create_client(self, payload: ClientDTO):
-        client_instance = self._session.query(Cliente).filter(
+        client_instance = self._session.query(Cliente).filter_by(
             documento=payload.documento).first()
         if not client_instance:
             client_instance = Cliente(
                 id=uuid4(),
-                **payload
+                **payload.__dict__
             )
             self._session.add(client_instance)
-        return client_instance
+        return client_instance.__dict__
 
-    def create_and_get_sale(self, payload: SellDTO):
+    def create_and_get_sale(self, payload: SellDTO, invoice_id):
         sell_instance = Venta(
             id=uuid4(),
-            **payload
+            factura_id=invoice_id,
+            **payload.__dict__
         )
         self._session.add(sell_instance)
-        return sell_instance
+        return sell_instance.__dict__
 
     @transactional
     def create_bill(self, bill_payload, client_payload, sell_payload):
         invoicer = self.get_unique_invoicer()
         client = self.get_or_create_client(client_payload)
-        sale = self.create_and_get_sale(sell_payload)
 
         bill_instance = Factura(
             id=uuid4(),
-            facturante_id=invoicer.id,
-            cliente_id=client.id,
-            venta_id=sale.id,
-            **bill_payload.dict()
+            facturante_id=invoicer['id'],
+            cliente_id=client['id'],
+            **bill_payload.__dict__
         )
-        self._session.add(bill_instance)
-        self.close_session()
 
-        return bill_instance
+        self._session.add(bill_instance)
+
+        self.create_and_get_sale(
+            payload=sell_payload,
+            invoice_id=bill_instance.id)
+
+        return {
+            "data": bill_instance,
+            "message": "Bill created successfully"
+        }
 
     def close_session(self):
         self._session.close()

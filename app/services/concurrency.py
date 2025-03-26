@@ -31,7 +31,7 @@ class ProcessRunner(IProcessRunner):
             thread.join()
 
         logger.info(
-            f"Billing process ended. Sending summary to Discord.")
+            f"Billing proceess ended, sending summary to Discord...")
 
 
 class QueueManager(IQueueManager):

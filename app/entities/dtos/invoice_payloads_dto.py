@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from sqlalchemy.types import UUID, DateTime
+from typing import Union
 
 
 @dataclass
@@ -8,6 +9,9 @@ class ClientDTO:
     email: str
     documento: str
     documento_tipo: str
+    provincia: str
+    domicilio: str
+    codigo_postal: Union[str, int]
 
 
 @dataclass

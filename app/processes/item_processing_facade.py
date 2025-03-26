@@ -17,12 +17,13 @@ class SingletonManager:
         return cls._instances[name]
 
 
-def get_or_create_session():
-    return SingletonManager.get_or_create_instance('database', lambda: Database().get_local_session())
+def get_or_create_database():
+    return SingletonManager.get_or_create_instance('database', lambda: Database())
 
 
 def get_or_create_repository():
-    session = get_or_create_session()
+    database: Database = get_or_create_database()
+    session = database.create_session()
     return SingletonManager.get_or_create_instance('bill_repository', lambda: BillRepository(session=session))
 
 
@@ -35,25 +36,22 @@ def get_or_create_arca_instance():
 
 @error_handling_provider
 def process_transaction_facade(transaction):
+    logger.info(f'Iterating over the follow transaction: {transaction}')
     # billing stuff
     arca_instance = get_or_create_arca_instance()
     arca_response = arca_instance.bill(transaction)
+    logger.info(f'ARCA Response: {arca_response['message']}')
+    logger.debug(f'Bill created: {arca_response['builded_bill']}')
 
     # querying stuff
     repository: IBillRepository = get_or_create_repository()
-    client_dto, sell_dto, bill_dto = BillBuilder().build_dtos(
+    builded_dtos = BillBuilder().build_dtos(
         transaction=transaction,
         bill_data=arca_response['builded_bill']
     )
     bill_creation_querie_response = repository.create_bill(
-        bill_payload=bill_dto,
-        sell_payload=sell_dto,
-        client_payload=client_dto
+        bill_payload=builded_dtos['bill'],
+        sell_payload=builded_dtos['sell'],
+        client_payload=builded_dtos['client']
     )
-
-    bill_summary: dict = {
-        "payclub_transaction_id":  transaction.get('txid', "Payclub ID does not provided"),
-        "arca_response": arca_response['message'],
-        "database_querie_response": bill_creation_querie_response
-    }
-    logger.info(f'Billing response: {bill_summary}')
+    logger.info(f'Bill creation status: {bill_creation_querie_response.get('message', "ERROR")}')

@@ -26,6 +26,7 @@ def get_transactions_strategy(custom_dates: dict):
 @error_handling_provider
 def billing_process_facade(args):
     transactions = get_transactions_strategy(custom_dates=args.to_dict())
+
     queue_manager = QueueManager()
     task_dispatcher = TaskDispatcher()
     thread_manager = ThreadManager()

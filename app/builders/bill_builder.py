@@ -3,14 +3,17 @@ from app.entities.dtos.invoice_payloads_dto import ClientDTO, SellDTO, BillDTO
 
 
 class BillBuilder:
-    def build_dtos(transaction, bill_data):
+    def build_dtos(self, transaction, bill_data):
         today = datetime.now()
 
         client_dto = ClientDTO(
             documento=transaction['customerNin'],
             documento_tipo='DNI',
             email=transaction['customerEmail'],
-            nombre_completo=['storeName']
+            nombre_completo=transaction['storeName'],
+            provincia=transaction['provincia'],
+            domicilio=transaction['domicilio'],
+            codigo_postal=transaction['codigo_postal']
         )
 
         sell_dto = SellDTO(
@@ -30,4 +33,8 @@ class BillBuilder:
             punto_de_venta=bill_data['PtoVta']
         )
 
-        return client_dto, sell_dto, bill_dto
+        return {
+            "client": client_dto,
+            "sell": sell_dto,
+            "bill": bill_dto
+        }
