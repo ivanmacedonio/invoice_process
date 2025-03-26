@@ -37,21 +37,24 @@ def get_or_create_arca_instance():
 @error_handling_provider
 def process_transaction_facade(transaction):
     logger.info(f'Iterating over the follow transaction: {transaction}')
-    # billing stuff
+
+    # setup instances
     arca_instance = get_or_create_arca_instance()
+    repository: IBillRepository = get_or_create_repository()
+
+    # billing stuff
     arca_response = arca_instance.bill(transaction)
     logger.info(f'ARCA Response: {arca_response['message']}')
     logger.debug(f'Bill created: {arca_response['builded_bill']}')
 
     # querying stuff
-    repository: IBillRepository = get_or_create_repository()
     builded_dtos = BillBuilder().build_dtos(
         transaction=transaction,
         bill_data=arca_response['builded_bill']
     )
-    bill_creation_querie_response = repository.create_bill(
+    repository.create_bill(
         bill_payload=builded_dtos['bill'],
         sell_payload=builded_dtos['sell'],
         client_payload=builded_dtos['client']
     )
-    logger.info(f'Bill creation status: {bill_creation_querie_response.get('message', "ERROR")}')
+

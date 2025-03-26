@@ -1,4 +1,5 @@
 from sqlalchemy.orm.session import Session
+from app.configs.logger import logger
 from app.entities.dtos.invoice_payloads_dto import ClientDTO, SellDTO, BillDTO
 from sqlalchemy import exc
 from app.entities.models.models import Factura, Facturante, Cliente, Venta
@@ -55,10 +56,7 @@ class BillRepository(IBillRepository):
             payload=sell_payload,
             invoice_id=bill_instance.id)
 
-        return {
-            "data": bill_instance,
-            "message": "Bill created successfully"
-        }
+        logger.info("Bill created successfully")
 
     def close_session(self):
         self._session.close()

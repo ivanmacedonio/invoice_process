@@ -22,6 +22,10 @@ class BillingService(IBillingService):
         invoice = self.builder_manager.build_type_b_invoice(
             transaction, invoicer_data, arca_instance)
         arca_response = arca_instance.ElectronicBilling.createVoucher(invoice)
+
+        logger.info(f'ARCA Response: {arca_response}')
+        logger.debug(f'Bill created: {invoice}')
+
         return {
             "message": arca_response,
             "builded_bill": invoice
