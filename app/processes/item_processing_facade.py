@@ -3,6 +3,7 @@ from afip import Afip
 from app.services.database import Database
 from app.services.arca import BillingService, BuildManager, InstanceManager
 from app.repositories.bill_repository import BillRepository, IBillRepository
+from app.builders.bill_builder import BillBuilder
 from app.decorators.error_handling_provider import error_handling_provider
 
 
@@ -40,10 +41,19 @@ def process_transaction_facade(transaction):
 
     # querying stuff
     repository: IBillRepository = get_or_create_repository()
-    # bill_creation_querie_response = repository.create_bill()
+    client_dto, sell_dto, bill_dto = BillBuilder().build_dtos(
+        transaction=transaction,
+        bill_data=arca_response['builded_bill']
+    )
+    bill_creation_querie_response = repository.create_bill(
+        bill_payload=bill_dto,
+        sell_payload=sell_dto,
+        client_payload=client_dto
+    )
 
     bill_summary: dict = {
         "payclub_transaction_id":  transaction.get('txid', "Payclub ID does not provided"),
-        "arca_response": arca_response['message']
+        "arca_response": arca_response['message'],
+        "database_querie_response": bill_creation_querie_response
     }
     logger.info(f'Billing response: {bill_summary}')

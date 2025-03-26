@@ -37,7 +37,7 @@ class BillRepository(IBillRepository):
         return sell_instance
 
     @transactional
-    def create_bill(self, bill_payload: BillDTO, client_payload: ClientDTO, sell_payload: SellDTO):
+    def create_bill(self, bill_payload, client_payload, sell_payload):
         invoicer = self.get_unique_invoicer()
         client = self.get_or_create_client(client_payload)
         sale = self.create_and_get_sale(sell_payload)
