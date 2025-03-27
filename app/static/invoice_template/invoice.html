@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="widtd=device-widtd, initial-scale=1.0">
+    <link rel="stylesheet" href="invoice.css">
+    <title>Factura</title>
+</head>
+<body>
+    <div class="factura-container">
+        <img src="../images/logo.png" alt="sportclub_logo" id="logo">
+        <div id="red_band"></div>
+
+        <div class="invoice-info-cnt">
+            <div>
+                <p><strong>DATOS DEL FACTURANTE</strong></p>
+                <p>Dirección: XXXXXXX</p>
+                <p>Teléfono: XXXXXX</p>
+                <p>Email: XXXXXXXX</p>
+                <p>IVA RESPONSABLE INSCRIPTO</p>
+            </div>
+            <div>
+                <div class="b-icon-cnt" id=backgrounded>
+                    <h2>B</h2>
+                    <h3>COD. 06</h3>
+                </div>
+                <div id="vertical-line"></div>
+            </div>
+            <div>
+                <p><strong id="highlighted">FACTURA B - N°XXXXX-XXXXXX</strong></p>
+                <p>Fecha: XXXXXXX</p>
+                <p>CUIT: XXXXXX</p>
+                <p>Razón social: XXXXXXXX</p>
+                <p>Inicio de Actividades: XXXXXX</p>
+                <p>Ingresos Brutos: XXXXXX</p>
+            </div>
+        </div>
+        <div class="invoice-info-cnt" id="backgrounded">
+            <div>
+                <p><strong>INFORMACIÓN DEL CLIENTE</strong></p>
+                <p>Cliente: XXXXXXX</p>
+                <p>Dirección: XXXXXX</p>
+                <p>Provincia: XXXXXXXX</p>
+                <p>Email: XXXXXXXX</p>
+                <p>Documento: XXXXXXXX</p>
+                <p>Condición: Consumidor final</p>
+            </div>
+            <div>
+                <p><strong>CONDICIONES DE VENTA</strong></p>
+                <p>Método de pago: XXXXXXX</p>
+                <p>Tipo: Servicios</p>
+                <p>Fecha de inicio de servicios: XXXXXXXX</p>
+                <p>Fecha de fin de servicios: XXXXXX</p>
+                <p>Fecha de pago del servicio: XXXXXX</p>
+            </div>
+        </div>
+        <div class="invoice-grid">
+            <table>
+                <tr id="table-header">
+                    <td>Cantidad</td>
+                    <td>Descripción</td>
+                    <td>Subtotal</td>
+                    <td>Total</td>
+                </tr>
+                <tr>
+                    <td>1,00</td>
+                    <td>Canje de créditos SportClub</td>
+                    <td>$ 60.000</td>
+                    <td>$ 60.000</td>
+                </tr>
+            </table>
+        </div>
+        <div class="subtotal-cnt">
+            <div class="iva-cnt">
+                <p id="underlined">Régimen de Transparencia Fiscal al Consumidor (Ley 27.743)</p>
+                <p>IVA Contenido $ 0,00</p>
+            </div>
+            <div class="subtotal">
+                <div>
+                    <p>Subtotal</p>
+                    <p>$ 60.000</p>
+                </div>
+                <div>
+                    <p>Total Descuento</p>
+                    <p>$ 0</p>
+                </div>
+                <div id="total-row">
+                    <p>Final total</p>
+                    <p> $ 60.000</p>
+                </div>
+            </div>
+        </div>
+        <div class="cae-cnt">
+            <div>
+                <p>N° de CAE: XXXXXXXXXXXX</p>
+                <p>Fecha de Vencimiento: XXXXXXXX</p>
+            </div>
+            <img src="" alt="">
+        </div>
+    </div>
+</body>
+</html>

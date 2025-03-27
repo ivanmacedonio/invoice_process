@@ -44,8 +44,6 @@ def process_transaction_facade(transaction):
 
     # billing stuff
     arca_response = arca_instance.bill(transaction)
-    logger.info(f'ARCA Response: {arca_response['message']}')
-    logger.debug(f'Bill created: {arca_response['builded_bill']}')
 
     # querying stuff
     builded_dtos = BillBuilder().build_dtos(
@@ -57,4 +55,3 @@ def process_transaction_facade(transaction):
         sell_payload=builded_dtos['sell'],
         client_payload=builded_dtos['client']
     )
-
