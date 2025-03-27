@@ -3,7 +3,6 @@ from app.services.concurrency import ProcessRunner, QueueManager, TaskDispatcher
 from app.services.payclub import PayclubService
 from app.decorators.error_handling_provider import error_handling_provider
 from app.configs.environments import WORKERS_AMOUNT
-from app.configs.environments import WORKERS_AMOUNT
 
 
 def setup_and_get_payclub_instance():
