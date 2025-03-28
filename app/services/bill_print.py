@@ -2,20 +2,12 @@ import os
 import fitz
 from app.configs.logger import logger
 from app.utils.create_binary_qr_code import create_binary_qr_code
-
+from app.entities.dtos.invoice_payloads_dto import BillToPrintDTO
 
 class BillPrint:
 
-    def __init__(self, invoice):
-        self.invoice = invoice
-
-    '''
-    Unidades de medida:
-
-    El total del ancho del PDF es de 500px, usar 250 ubica el cursor en el centro del eje X
-    El total del alto depende del template seleccionado, se recomienda seguir como referencia
-    las etiquetas previamente insertadas
-    '''
+    def __init__(self, payload: BillToPrintDTO):
+        self.payload = payload
 
     def _setup_paths(self):
         self.pdf_path = os.path.join(os.path.dirname(
@@ -36,29 +28,29 @@ class BillPrint:
         self.page.insert_text(
             (20, 100), "DATOS DEL FACTURANTE", fontsize=13, color=(0, 0, 0), fontname="helvetica-bold")
         self.page.insert_text(
-            (20, 115), "Dirección: Calle falsa 123", fontsize=11, color=(0, 0, 0))
+            (20, 115), f"Dirección: {self.payload.direccion_facturante}", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
-            (20, 130), "Teléfono: 12312312312", fontsize=11, color=(0, 0, 0))
+            (20, 130), f"Teléfono: {self.payload.telefono_facturante}", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
-            (20, 145), "Email: soporte@hola.com", fontsize=11, color=(0, 0, 0))
+            (20, 145), f"Email: {self.payload.email_facturante}", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
             (20, 160), "IVA RESPONSABLE INSCRIPTO", fontsize=11, color=(0, 0, 0))
 
         # right side
         self.page.insert_text(
-            (360, 100), "Factura B - N°00044-00513118", fontname="helvetica-bold", fontsize=13, color=(1, 1, 1))
+            (360, 100), f"Factura B - N°{self.payload.num_comprobante}", fontname="helvetica-bold", fontsize=13, color=(1, 1, 1))
         self.page.insert_text(
-            (360, 120), "Fecha: 12/12/12", fontsize=11, color=(0, 0, 0))
+            (360, 120), f"Fecha: {self.payload.fecha_factura}", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
-            (470, 120), "CUIT: 1212121212", fontsize=11, color=(0, 0, 0))
+            (470, 120), f"CUIT: {self.payload.cuit}", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
             (360, 135), "Razon social: Gestion de emprendimientos", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
             (360, 150), "deportivos SA", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
-            (360, 165), "Inicio de Actividades: 12/12/12", fontsize=11, color=(0, 0, 0))
+            (360, 165), f"Inicio de Actividades: {self.payload.inicio_actividades}", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
-            (360, 180), "Ingresos brutos: 1212121212", fontsize=11, color=(0, 0, 0))
+            (360, 180), f"Ingresos brutos: {self.payload.ingresos_brutos}", fontsize=11, color=(0, 0, 0))
 
     def _write_invoice_type(self):
         self.page.insert_text(
@@ -70,15 +62,15 @@ class BillPrint:
         self.page.insert_text(
             (25, 210), "INFORMACIÓN DEL CLIENTE", fontname="helvetica-bold", fontsize=13, color=(0, 0, 0))
         self.page.insert_text(
-            (25, 225), "Cliente: ivan macedonio", fontsize=11, color=(0, 0, 0))
+            (25, 225), f"Cliente: {self.payload.nombre_cliente}", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
-            (25, 240), "Dirección: calle falsa 123", fontsize=11, color=(0, 0, 0))
+            (25, 240), f"Dirección: {self.payload.direccion_cliente}", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
-            (25, 255), "Provincia: Buenos Aires", fontsize=11, color=(0, 0, 0))
+            (25, 255), f"Provincia: {self.payload.provincia_cliente}", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
-            (25, 270), "Email: imacedonio@corp.sportclub.com.ar", fontsize=11, color=(0, 0, 0))
+            (25, 270), f"Email: {self.payload.email_cliente}", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
-            (25, 285), "Documento: 455747162", fontsize=11, color=(0, 0, 0))
+            (25, 285), f"Documento: {self.payload.documento_cliente}", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
             (25, 300), "Condición: Consumidor final", fontsize=11, color=(0, 0, 0))
 
@@ -90,11 +82,11 @@ class BillPrint:
         self.page.insert_text(
             (360, 240), "Tipo: Servicios", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
-            (360, 255), "Fecha de inicio de servicios: 2025-03-09", fontsize=11, color=(0, 0, 0))
+            (360, 255), f"Fecha de inicio de servicios: {self.payload.fecha_inicio_servicios}", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
-            (360, 270), "Fecha de fin de servicios: 2025-04-09", fontsize=11, color=(0, 0, 0))
+            (360, 270), f"Fecha de fin de servicios: {self.payload.fecha_fin_servicios}", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
-            (360, 285), "Fecha de pago del servicio: 2025-03-10", fontsize=11, color=(0, 0, 0))
+            (360, 285), f"Fecha de pago del servicio: {self.payload.fecha_pago_servicios}", fontsize=11, color=(0, 0, 0))
 
     def _write_transaction_row(self):
         self.page.insert_text(
@@ -102,37 +94,39 @@ class BillPrint:
         self.page.insert_text(
             (100, 363), "Canje de Créditos SportClub", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
-            (430, 363), "$1.000", fontsize=11, color=(0, 0, 0))
+            (430, 363), f"${self.payload.monto_total}", fontsize=11, color=(0, 0, 0))
         self.page.insert_text(
-            (520, 363), "$1.000", fontsize=11, color=(0, 0, 0))
+            (520, 363), f"${self.payload.monto_total}", fontsize=11, color=(0, 0, 0))
 
     def _write_iva_field(self):
         self.page.insert_text(
             (30, 670), "Régimen de Transparencia Fiscal al Consumidor (Ley 27.743)", fontsize=9, color=(0, 0, 0))
         self.page.insert_text(
-            (30, 700), "IVA Contenido $ 7.253,82", fontsize=9, color=(0, 0, 0))
+            (30, 700), f"IVA Contenido $ {self.payload.monto_iva}", fontsize=9, color=(0, 0, 0))
 
     def _write_amounts(self):
         self.page.insert_text(
             (340, 650), "Subtotal", fontsize=13, color=(0, 0, 0))
         self.page.insert_text(
-            (470, 650), "$1.000", fontsize=13, color=(0, 0, 0))
+            (470, 650), f"${self.payload.monto_total}", fontsize=13, color=(0, 0, 0))
         self.page.insert_text(
             (340, 680), "Total Descuento", fontsize=13, color=(0, 0, 0))
         self.page.insert_text(
             (470, 680), "$0", fontsize=13, color=(0, 0, 0))
         self.page.insert_text(
-            (340, 715), "Final Total $1.000", fontsize=15, fontname="helvetica-bold", color=(1, 1, 1))
+            (340, 713), "Final Total", fontsize=15, fontname="helvetica-bold", color=(1, 1, 1))
+        self.page.insert_text(
+            (470, 713), f"${self.payload.monto_total}", fontsize=15, fontname="helvetica-bold", color=(1, 1, 1))
 
     def _write_cae_fields(self):
-        qr_code = create_binary_qr_code(invoice=self.invoice)
-        rect = fitz.Rect(400, 700, 500, 800)
+        qr_code = create_binary_qr_code(payload=self.payload)
+        rect = fitz.Rect(30, 730, 100, 810)
 
-        self.page._insert_image(rect, stream=qr_code, filename="qr_code.png")
+        self.page.insert_image(rect, stream=qr_code)
         self.page.insert_text(
-            (120, 760), "N° de CAE: 74377718712214", fontname="helvetica-bold", fontsize=13, color=(0, 0, 0))
+            (120, 760), f"N° de CAE: {self.payload.cae}", fontname="helvetica-bold", fontsize=13, color=(0, 0, 0))
         self.page.insert_text(
-            (120, 790), "Fecha de Vencimiento: 21/09/2024", fontname="helvetica-bold", fontsize=13, color=(0, 0, 0))
+            (120, 790), f"Fecha de Vencimiento: {self.payload.fecha_vencimiento_cae}", fontname="helvetica-bold", fontsize=13, color=(0, 0, 0))
 
     def write_pdf(self):
         # setup

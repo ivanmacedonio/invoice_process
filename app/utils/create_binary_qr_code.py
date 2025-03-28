@@ -3,25 +3,26 @@ import base64
 import qrcode
 from app.configs.environments import ARCA_QR_CODE_GENERATOR_URL
 import io
+from app.entities.dtos.invoice_payloads_dto import BillToPrintDTO
 
 
-def create_binary_qr_code(invoice: dict):
+def create_binary_qr_code(payload: BillToPrintDTO):
     url = ARCA_QR_CODE_GENERATOR_URL
 
     data = {
         'ver': 1,
-        'fecha': invoice['fecha_factura'],
-        'cuit': int(invoice['cuit']),
-        'ptoVta': int(invoice['punto_de_venta']),
+        'fecha': payload.fecha_factura,
+        'cuit': int(payload.cuit),
+        'ptoVta': int(payload.punto_de_venta),
         'tipoCmp': 6,
-        'nroCmp': int(invoice['numero_comprobante']),
-        'importe': float(invoice['monto_total']),
+        'nroCmp': int(payload.num_comprobante),
+        'importe': float(payload.monto_total),
         'moneda': 'PES',
         'ctz': float(1.000),
         'tipoDocRec': 99,
         'nroDocRec': 0,
         'tipoCodAut': 'E',
-        'codAut': int(invoice['cae'])
+        'codAut': int(payload.cae)
     }
 
     data_json = json.dumps(data)
@@ -39,6 +40,6 @@ def create_binary_qr_code(invoice: dict):
     img = qr.make_image(fill_color='black', back_color='white')
     img_byte_arr = io.BytesIO()
     img.save(img_byte_arr, format='PNG')
-    img_byte_arr = img_byte_arr.getvalue()
+    img_byte_arr.seek(0)
 
     return img_byte_arr

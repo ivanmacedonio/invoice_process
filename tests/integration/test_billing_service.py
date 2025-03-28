@@ -8,7 +8,7 @@ from app.repositories.bill_repository import BillRepository
 class TestBillingService(TestCase):
 
     def setUp(self):
-        db_session = Database().get_local_session()
+        db_session = Database().create_session()
         instance_manager = InstanceManager(
             billing_processor=Afip
         )

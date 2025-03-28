@@ -7,7 +7,7 @@ from app.services.database import Database
 class TestBillingService(TestCase):
 
     def get_or_create_session(self):
-        return Database().get_local_session()
+        return Database().create_session()
 
     def set_up_repository(self):
         session = self.get_or_create_session()

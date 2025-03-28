@@ -27,8 +27,9 @@ class BillingService(IBillingService):
         logger.debug(f'Bill created: {invoice}')
 
         return {
-            "message": arca_response,
-            "builded_bill": invoice
+            "cae_data": arca_response,
+            "builded_bill": invoice,
+            "invoicer_data": invoicer_data
         }
 
 

@@ -1,5 +1,6 @@
 from app.configs.logger import logger
 from afip import Afip
+from app.services.bill_print import BillPrint
 from app.services.database import Database
 from app.services.arca import BillingService, BuildManager, InstanceManager
 from app.repositories.bill_repository import BillRepository, IBillRepository
@@ -37,6 +38,9 @@ def get_or_create_arca_instance():
 @error_handling_provider
 def process_transaction_facade(transaction):
     logger.info(f'Iterating over the follow transaction: {transaction}')
+    transaction['provincia'] = "Buenos Aires"
+    transaction['domicilio'] = "Calle falsa 123"
+    transaction['codigo_postal'] = "123"
 
     # setup instances
     arca_instance = get_or_create_arca_instance()
@@ -48,10 +52,15 @@ def process_transaction_facade(transaction):
     # querying stuff
     builded_dtos = BillBuilder().build_dtos(
         transaction=transaction,
-        bill_data=arca_response['builded_bill']
+        bill_data=arca_response['builded_bill'],
+        invoicer_data=arca_response['invoicer_data'],
+        cae_data=arca_response['cae_data']
     )
     repository.create_bill(
         bill_payload=builded_dtos['bill'],
         sell_payload=builded_dtos['sell'],
         client_payload=builded_dtos['client']
     )
+
+    # billing print stuff
+    BillPrint(payload=builded_dtos['bill_to_print']).write_pdf()
