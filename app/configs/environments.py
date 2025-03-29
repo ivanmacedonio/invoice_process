@@ -22,3 +22,7 @@ DATABASE_NAME = os.getenv('DATABASE_NAME')
 
 # arca
 ARCA_QR_CODE_GENERATOR_URL = os.getenv('ARCA_QR_CODE_GENERATOR_URL')
+
+# mailchimp creds
+MAILCHIMP_API_KEY = os.getenv('MAILCHIMP_API_KEY')
+FROM_EMAIL = os.getenv('FROM_EMAIL')

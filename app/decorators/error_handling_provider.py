@@ -2,6 +2,7 @@ import traceback
 import requests
 from app.configs.logger import logger
 from sqlalchemy.exc import SQLAlchemyError, DisconnectionError, IntegrityError, DatabaseError, ArgumentError
+from mailchimp_transactional.api_client import ApiClientError
 
 
 def error_handling_provider(func):
@@ -48,6 +49,11 @@ def error_handling_provider(func):
         except ArgumentError as sqlargerr:
             logger.error(traceback.format_exc())
             logger.error(f'SQLAlchemy Unexpected Database error: {sqlargerr}')
+
+        except ApiClientError as emaile:
+            logger.error(traceback.format_exc())
+            logger.error(
+                f'Unexpected Mailchimp error while trying to send the bill via email: {emaile.text}')
 
         except Exception as e:
             logger.error(traceback.format_exc())

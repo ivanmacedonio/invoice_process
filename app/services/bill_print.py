@@ -1,10 +1,14 @@
 import os
+import base64
 import fitz
+from io import BytesIO
 from app.configs.logger import logger
 from app.utils.create_binary_qr_code import create_binary_qr_code
 from app.entities.dtos.invoice_payloads_dto import BillToPrintDTO
+from app.interfaces.bill_print_interface import IBillPrintService
 
-class BillPrint:
+
+class BillPrint(IBillPrintService):
 
     def __init__(self, payload: BillToPrintDTO):
         self.payload = payload
@@ -18,10 +22,17 @@ class BillPrint:
         self.doc = fitz.open(self.pdf_path)
         self.page = self.doc[0]
 
-    def _save_pdf(self, doc):
-        doc.save(self.output_path)
+    def _save_pdf_and_return_binary(self, doc):
+        binary_buffer = BytesIO()
+        doc.save(binary_buffer)
+        binary_buffer.seek(0)
+
+        encoded_pdf = base64.b64encode(
+            binary_buffer.getvalue()).decode("utf-8")
+
         logger.info('Invoice PDF has been updated and storaged')
-        doc.close()
+
+        return encoded_pdf
 
     def _write_invoicer_fields(self):
         # left side
@@ -128,7 +139,7 @@ class BillPrint:
         self.page.insert_text(
             (120, 790), f"Fecha de Vencimiento: {self.payload.fecha_vencimiento_cae}", fontname="helvetica-bold", fontsize=13, color=(0, 0, 0))
 
-    def write_pdf(self):
+    def write_and_get_binary_pdf(self):
         # setup
         self._setup_paths()
         self._setup_doc()
@@ -143,5 +154,6 @@ class BillPrint:
         self._write_amounts()
         self._write_cae_fields()
 
-        # save
-        self._save_pdf(self.doc)
+        # save and return
+        binnary_buffer = self._save_pdf_and_return_binary(self.doc)
+        return binnary_buffer
