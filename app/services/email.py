@@ -12,6 +12,7 @@ class EmailService(IEmailService):
         if not cls._mailchimp_instance:
             cls._mailchimp_instance = MailChimpTransactional.Client(
                 MAILCHIMP_API_KEY)
+        return super().__new__(cls)
 
     def get_or_create_instance(self):
         return self._mailchimp_instance

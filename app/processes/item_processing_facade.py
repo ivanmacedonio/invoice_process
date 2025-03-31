@@ -14,8 +14,14 @@ from app.entities.enums.payclub_status_enum import PayclubTransactionStatus
 def process_transaction_facade(transaction):
     logger.info(f'Iterating over the follow transaction: {transaction}')
 
-    if not is_transaction_approved or transaction_was_already_invoiced():
+    if not is_transaction_approved and transaction_was_already_invoiced():
         return
+
+    # TODO: REMOVE WHEN PAYCLUB ADD THE NECESSARY FIELDS
+    transaction['domicilio'] = "Calle falsa 123"
+    transaction['codigo_postal'] = 123
+    transaction['provincia'] = "Buenos Aires"
+    transaction['customerEmail'] = "ivanmacedonio778@gmail.com"
 
     arca_instance = get_or_create_arca_instance()
     arca_response = arca_instance.bill(transaction)

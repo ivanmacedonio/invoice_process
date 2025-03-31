@@ -8,11 +8,12 @@ from app.entities.dtos.invoice_payloads_dto import BillToPrintDTO
 
 def create_binary_qr_code(payload: BillToPrintDTO):
     url = ARCA_QR_CODE_GENERATOR_URL
+    formatted_cuit = int(payload.cuit.replace("-", ""))
 
     data = {
         'ver': 1,
         'fecha': payload.fecha_factura,
-        'cuit': int(payload.cuit),
+        'cuit': formatted_cuit,
         'ptoVta': int(payload.punto_de_venta),
         'tipoCmp': 6,
         'nroCmp': int(payload.num_comprobante),

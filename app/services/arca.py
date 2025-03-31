@@ -16,6 +16,7 @@ class BillingService(IBillingService):
         self.repository = repository
 
     def bill(self, transaction: dict) -> dict:
+        transaction['amount'] = abs(transaction.get('amount'))
         invoicer_data = self.repository.get_unique_invoicer()
         arca_instance: Afip = self.instance_manager.get_or_create_instance(
             invoicer_data)

@@ -30,7 +30,7 @@ class BillPrint(IBillPrintService):
         encoded_pdf = base64.b64encode(
             binary_buffer.getvalue()).decode("utf-8")
 
-        logger.info('Invoice PDF has been updated and storaged')
+        logger.info('Invoice PDF has been updated and storaged in the buffer')
 
         return encoded_pdf
 

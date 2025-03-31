@@ -16,6 +16,7 @@ class BillBuilder:
 
         today = datetime.now()
         today_formatted = parse_datetime_to_string(today)
+        transaction['amount'] = abs(transaction.get('amount'))
 
         client_dto = ClientDTO(
             documento=transaction.get('customerNin'),
