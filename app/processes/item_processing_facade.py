@@ -7,11 +7,15 @@ from app.repositories.bill_repository import BillRepository, IBillRepository
 from app.services.email import EmailService
 from app.builders.bill_builder import BillBuilder
 from app.decorators.error_handling_provider import error_handling_provider
+from app.entities.enums.payclub_status_enum import PayclubTransactionStatus
 
 
 @error_handling_provider
 def process_transaction_facade(transaction):
     logger.info(f'Iterating over the follow transaction: {transaction}')
+
+    if not is_transaction_approved or transaction_was_already_invoiced():
+        return
 
     arca_instance = get_or_create_arca_instance()
     arca_response = arca_instance.bill(transaction)
@@ -29,6 +33,19 @@ def process_transaction_facade(transaction):
         to_email=transaction.get("customerEmail"),
         b64_pdf=binary_pdf
     )
+
+
+def is_transaction_approved(transaction):
+    if transaction.get("status") != PayclubTransactionStatus.CONFIRMED.value:
+        logger.info(
+            "Current transaction is not confirmed, skipping to the next one")
+        return False
+    return True
+
+
+def transaction_was_already_invoiced(transaction):
+    repository = get_or_create_repository()
+    return repository.bill_was_already_invoiced(transaction.get('txid'))
 
 
 def create_and_push_to_db_facade(transaction, arca_response):

@@ -3,6 +3,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# api key
+API_KEY = os.getenv('API_KEY')
+
 # concurrency
 WORKERS_AMOUNT = os.getenv('WORKERS_AMOUNT')
 

@@ -1,1 +1,10 @@
-# ENV PYTHONPATH /path/to/your/project ->  should indicate the pythonpath
+FROM python:3.12.6-slim
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+
+EXPOSE 3001
+
+CMD ["python", "main.py"]

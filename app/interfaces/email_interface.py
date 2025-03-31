@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from app.services.email import EmailService
 
 
 class IEmailService(ABC):

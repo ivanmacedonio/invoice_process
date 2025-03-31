@@ -1,37 +1,30 @@
 import logging
-import threading
+import logging.handlers
 import queue
+import threading
 
 log_queue = queue.Queue()
 
+queue_handler = logging.handlers.QueueHandler(log_queue)
 
-class LogHandler(logging.Handler):
-    def __init__(self, log_queue):
-        super().__init__()
-        self.log_queue = log_queue
+logger = logging.getLogger("AppLogger")
+logger.setLevel(logging.DEBUG)
+logger.addHandler(queue_handler)
 
-    def emit(self, record):
-        self.log_queue.put(record)
-
-
-logging.basicConfig(format='%(levelname)s ~ %(asctime)s - %(filename)s: %(message)s.',
-                    datefmt='%d-%m-%Y %I:%M:%S', level=logging.DEBUG)
-
-logger = logging.getLogger(__name__)
-logger.handlers.clear()
-log_queue_handler = LogHandler(log_queue)
-logger.addHandler(log_queue_handler)
+log_formatter = logging.Formatter(
+    '%(levelname)s ~ %(asctime)s - %(message)s.', datefmt='%d-%m-%Y %I:%M:%S')
 
 
 def log_listener():
+    console_handler = logging.StreamHandler()
+    console_handler.setFormatter(log_formatter)
+
     while True:
         record = log_queue.get()
-        if record is None or log_queue.empty():
+        if record is None:
             break
-        logging.getLogger().handle(record)
+        console_handler.handle(record)
 
 
-log_thread = threading.Thread(
-    target=log_listener, daemon=True
-)
-log_thread.start()
+listener_thread = threading.Thread(target=log_listener, daemon=True)
+listener_thread.start()

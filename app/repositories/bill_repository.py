@@ -12,6 +12,9 @@ class BillRepository(IBillRepository):
     def __init__(self, session: Session):
         self._session = session
 
+    def bill_was_already_invoiced(self, txid):
+        return self._session.query(Factura).filter_by(payclub_payment_id=txid).count() > 0
+
     def get_unique_invoicer(self):
         invoicer_instance = self._session.query(Facturante).one_or_none()
         if not invoicer_instance:
