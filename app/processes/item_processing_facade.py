@@ -1,13 +1,16 @@
 from app.configs.logger import logger
 from afip import Afip
+from threading import Lock
 from app.services.bill_print import BillPrint
 from app.services.database import Database
 from app.services.arca import BillingService, BuildManager, InstanceManager
 from app.repositories.bill_repository import BillRepository, IBillRepository
-from app.services.email import EmailService
 from app.builders.bill_builder import BillBuilder
+from app.services.email import EmailService
 from app.decorators.error_handling_provider import error_handling_provider
 from app.entities.enums.payclub_status_enum import PayclubTransactionStatus
+
+instance_lock = Lock()
 
 
 @error_handling_provider
@@ -24,7 +27,8 @@ def process_transaction_facade(transaction):
     transaction['customerEmail'] = "ivanmacedonio778@gmail.com"
 
     arca_instance = get_or_create_arca_instance()
-    arca_response = arca_instance.bill(transaction)
+    with instance_lock:
+        arca_response = arca_instance.bill(transaction)
 
     builded_dtos = create_and_push_to_db_facade(
         arca_response=arca_response,
