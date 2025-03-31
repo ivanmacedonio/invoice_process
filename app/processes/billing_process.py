@@ -3,6 +3,7 @@ from app.services.concurrency import ProcessRunner, QueueManager, TaskDispatcher
 from app.services.payclub import PayclubService
 from app.decorators.error_handling_provider import error_handling_provider
 from app.configs.environments import WORKERS_AMOUNT
+from app.configs.logger import logger
 
 
 @error_handling_provider
@@ -13,6 +14,8 @@ def billing_process_facade(args):
     task_dispatcher = TaskDispatcher()
     thread_manager = ThreadManager()
     factory = WorkerFactory()
+
+    logger.info(f"Starting process with {WORKERS_AMOUNT} threads")
 
     concurrent_process_runner = ProcessRunner(
         WORKERS_AMOUNT, queue_manager, task_dispatcher, thread_manager, factory)

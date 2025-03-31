@@ -51,7 +51,7 @@ class BillBuilder:
             direccion_cliente=transaction.get('domicilio'),
             provincia_cliente=transaction.get('provincia'),
             email_cliente=transaction.get('customerEmail'),
-            monto_total=bill_data.get('ImpTotal'),
+            monto_total=abs(transaction.get('amount')),
             monto_iva=bill_data.get('ImpIVA'),
             cae=cae_data.get('CAE'),
             concepto="Servicios",

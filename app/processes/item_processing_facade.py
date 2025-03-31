@@ -9,25 +9,19 @@ from app.builders.bill_builder import BillBuilder
 from app.services.email import EmailService
 from app.decorators.error_handling_provider import error_handling_provider
 from app.entities.enums.payclub_status_enum import PayclubTransactionStatus
+from app.entities.enums.payclub_product_type import PayclubProductTypeEnum
 
 instance_lock = Lock()
 
 
 @error_handling_provider
 def process_transaction_facade(transaction):
-    logger.info(f'Iterating over the follow transaction: {transaction}')
-
-    if not is_transaction_approved and transaction_was_already_invoiced():
+    if is_invalid_transaction(transaction):
         return
-
-    # TODO: REMOVE WHEN PAYCLUB ADD THE NECESSARY FIELDS
-    transaction['domicilio'] = "Calle falsa 123"
-    transaction['codigo_postal'] = 123
-    transaction['provincia'] = "Buenos Aires"
-    transaction['customerEmail'] = "ivanmacedonio778@gmail.com"
-
-    arca_instance = get_or_create_arca_instance()
+      
     with instance_lock:
+        arca_instance = get_or_create_arca_instance()
+        logger.info(f'Iterating over the follow transaction: {transaction}')
         arca_response = arca_instance.bill(transaction)
 
     builded_dtos = create_and_push_to_db_facade(
@@ -44,18 +38,25 @@ def process_transaction_facade(transaction):
         b64_pdf=binary_pdf
     )
 
+def is_invalid_transaction(transaction):
+    return not is_transaction_approved(transaction) or transaction_was_already_invoiced(transaction) or not is_received_points_product(transaction)
+
 
 def is_transaction_approved(transaction):
-    if transaction.get("status") != PayclubTransactionStatus.CONFIRMED.value:
-        logger.info(
-            "Current transaction is not confirmed, skipping to the next one")
-        return False
-    return True
+    return transaction.get("status") == PayclubTransactionStatus.CONFIRMED.value
 
 
 def transaction_was_already_invoiced(transaction):
     repository = get_or_create_repository()
-    return repository.bill_was_already_invoiced(transaction.get('txid'))
+    was_already_invoiced = repository.bill_was_already_invoiced(
+        transaction.get('txid'))
+    return was_already_invoiced
+
+
+def is_received_points_product(transaction):
+    is_received_points_type = transaction.get(
+        'product') == PayclubProductTypeEnum.RECEIVED_POINTS.value
+    return is_received_points_type
 
 
 def create_and_push_to_db_facade(transaction, arca_response):

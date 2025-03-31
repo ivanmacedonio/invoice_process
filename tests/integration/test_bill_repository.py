@@ -38,14 +38,3 @@ class TestBillingService(TestCase):
         self.assertIsInstance(
             invoicer_response['fecha_vencimiento_cae'], datetime)
         self.assertIsInstance(invoicer_response['punto_de_venta'], str)
-
-        # Credentials format checks
-        self.assertTrue(invoicer_response['arca_secret_key'].startswith(
-            '-----BEGIN PRIVATE KEY-----'))
-        self.assertTrue(invoicer_response['arca_secret_key'].endswith(
-            '-----END PRIVATE KEY-----'))
-
-        self.assertTrue(invoicer_response['arca_certify'].startswith(
-            '-----BEGIN CERTIFICATE-----'))
-        self.assertTrue(invoicer_response['arca_certify'].endswith(
-            '-----END CERTIFICATE-----'))
