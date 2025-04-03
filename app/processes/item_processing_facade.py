@@ -11,13 +11,13 @@ from app.decorators.error_handling_provider import error_handling_provider
 from app.entities.enums.payclub_status_enum import PayclubTransactionStatus
 from app.entities.enums.payclub_product_type import PayclubProductTypeEnum
 from app.utils.custom_exceptions import AlreadyInvoicedException, RejectedTransaction, InvalidTransactionType
+from app.utils.validate_fields import validate_fields
 
 instance_lock = Lock()
 
 
 @error_handling_provider
 def process_transaction_facade(transaction):
-
     skip_if_transaction_is_invalid(transaction)
 
     with instance_lock:
@@ -50,6 +50,8 @@ def skip_if_transaction_is_invalid(transaction):
     if transaction_was_already_invoiced:
         raise AlreadyInvoicedException(transaction)
 
+    validate_transaction_fields(transaction)
+
 
 def is_transaction_approved(transaction):
     return transaction.get("status") == PayclubTransactionStatus.CONFIRMED.value
@@ -66,6 +68,18 @@ def is_received_points_product(transaction):
     is_received_points_type = transaction.get(
         'product') == PayclubProductTypeEnum.RECEIVED_POINTS.value
     return is_received_points_type
+
+
+def validate_transaction_fields(transaction):
+    validate_fields(target_fields={
+        "txid": transaction['txid'],
+        "product": transaction['product'],
+        "customerNin": transaction['customerNin'],
+        "customerEmail": transaction['customerEmail'],
+        "amount": transaction['amount'],
+        "storeName": transaction['storeName'],
+        "status": transaction['status'],
+    }, error_message="missing fields while trying to process the transaction. Skipping to the next one")
 
 
 def create_and_push_to_db_facade(transaction, arca_response):
