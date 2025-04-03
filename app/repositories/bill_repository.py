@@ -60,6 +60,7 @@ class BillRepository(IBillRepository):
             invoice_id=bill_instance.id)
 
         logger.info("Bill created successfully")
+        return bill_instance.__dict__
 
     def close_session(self):
         self._session.close()

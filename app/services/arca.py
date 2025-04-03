@@ -55,9 +55,9 @@ class InstanceManager(IInstanceManager):
 
                 logger.info("Initializing Afip instance...")
                 self._instance = self.billing_processor({
-                    "CUIT": 20409378472,
-                    # "cert": certify,
-                    # "key": secret_key
+                    "CUIT": formatted_cuit,
+                    "cert": certify,
+                    "key": secret_key
                 })
             return self._instance
 

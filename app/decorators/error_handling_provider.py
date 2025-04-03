@@ -3,6 +3,7 @@ import requests
 from app.configs.logger import logger
 from sqlalchemy.exc import SQLAlchemyError, DisconnectionError, IntegrityError, DatabaseError, ArgumentError
 from mailchimp_transactional.api_client import ApiClientError
+from app.utils.custom_exceptions import AlreadyInvoicedException, InvalidTransactionType, RejectedTransaction
 
 
 def error_handling_provider(func):
@@ -54,6 +55,9 @@ def error_handling_provider(func):
             logger.error(traceback.format_exc())
             logger.error(
                 f'Unexpected Mailchimp error while trying to send the bill via email: {emaile.text}')
+
+        except (InvalidTransactionType, RejectedTransaction, AlreadyInvoicedException) as e:
+            logger.info(f'{e}: skipping to the next transaction')
 
         except Exception as e:
             logger.error(traceback.format_exc())

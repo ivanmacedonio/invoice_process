@@ -10,15 +10,16 @@ from app.services.email import EmailService
 from app.decorators.error_handling_provider import error_handling_provider
 from app.entities.enums.payclub_status_enum import PayclubTransactionStatus
 from app.entities.enums.payclub_product_type import PayclubProductTypeEnum
+from app.utils.custom_exceptions import AlreadyInvoicedException, RejectedTransaction, InvalidTransactionType
 
 instance_lock = Lock()
 
 
 @error_handling_provider
 def process_transaction_facade(transaction):
-    if is_invalid_transaction(transaction):
-        return
-      
+
+    skip_if_transaction_is_invalid(transaction)
+
     with instance_lock:
         arca_instance = get_or_create_arca_instance()
         logger.info(f'Iterating over the follow transaction: {transaction}')
@@ -38,8 +39,16 @@ def process_transaction_facade(transaction):
         b64_pdf=binary_pdf
     )
 
-def is_invalid_transaction(transaction):
-    return not is_transaction_approved(transaction) or transaction_was_already_invoiced(transaction) or not is_received_points_product(transaction)
+
+def skip_if_transaction_is_invalid(transaction):
+    if not is_received_points_product:
+        raise InvalidTransactionType(transaction)
+
+    if not is_transaction_approved:
+        raise RejectedTransaction(transaction)
+
+    if transaction_was_already_invoiced:
+        raise AlreadyInvoicedException(transaction)
 
 
 def is_transaction_approved(transaction):
