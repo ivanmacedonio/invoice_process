@@ -19,10 +19,6 @@ instance_lock = Lock()
 @error_handling_provider
 def process_transaction_facade(transaction):
     skip_if_transaction_is_invalid(transaction)
-    transaction['customerEmail'] = "imacedonio@sportclub.team"
-    transaction['provincia'] = "test"
-    transaction['domicilio'] = "test"
-    transaction['codigo_postal'] = "123"
 
     with instance_lock:
         logger.info(f'Iterating over the follow transaction: {transaction}')
