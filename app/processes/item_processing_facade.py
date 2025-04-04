@@ -19,10 +19,14 @@ instance_lock = Lock()
 @error_handling_provider
 def process_transaction_facade(transaction):
     skip_if_transaction_is_invalid(transaction)
+    transaction['customerEmail'] = "imacedonio@sportclub.team"
+    transaction['provincia'] = "test"
+    transaction['domicilio'] = "test"
+    transaction['codigo_postal'] = "123"
+    logger.info(f'Iterating over the follow transaction: {transaction}')
 
     with instance_lock:
         arca_instance = get_or_create_arca_instance()
-        logger.info(f'Iterating over the follow transaction: {transaction}')
         arca_response = arca_instance.bill(transaction)
 
     builded_dtos = create_and_push_to_db_facade(
@@ -41,13 +45,13 @@ def process_transaction_facade(transaction):
 
 
 def skip_if_transaction_is_invalid(transaction):
-    if not is_received_points_product:
+    if not is_received_points_product(transaction):
         raise InvalidTransactionType(transaction)
 
-    if not is_transaction_approved:
+    if not is_transaction_approved(transaction):
         raise RejectedTransaction(transaction)
 
-    if transaction_was_already_invoiced:
+    if transaction_was_already_invoiced(transaction):
         raise AlreadyInvoicedException(transaction)
 
     validate_transaction_fields(transaction)
@@ -65,9 +69,7 @@ def transaction_was_already_invoiced(transaction):
 
 
 def is_received_points_product(transaction):
-    is_received_points_type = transaction.get(
-        'product') == PayclubProductTypeEnum.RECEIVED_POINTS.value
-    return is_received_points_type
+    return transaction.get('product') == PayclubProductTypeEnum.RECEIVED_POINTS.value
 
 
 def validate_transaction_fields(transaction):

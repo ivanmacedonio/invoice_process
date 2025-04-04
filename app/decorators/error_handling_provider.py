@@ -56,8 +56,11 @@ def error_handling_provider(func):
             logger.error(
                 f'Unexpected Mailchimp error while trying to send the bill via email: {emaile.text}')
 
-        except (InvalidTransactionType, RejectedTransaction, AlreadyInvoicedException) as e:
-            logger.info(f'{e}: skipping to the next transaction')
+        except (RejectedTransaction, AlreadyInvoicedException) as e:
+            logger.info(f'{e}: Skipping to the next transaction')
+
+        except InvalidTransactionType:
+            pass
 
         except Exception as e:
             logger.error(traceback.format_exc())

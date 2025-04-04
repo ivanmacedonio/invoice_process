@@ -9,18 +9,22 @@ from app.processes.item_processing_facade import process_transaction_facade
 
 
 class ProcessRunner(IProcessRunner):
-    def __init__(self, workers_amount, queue_manager, task_dispatcher, thread_manager, factory):
+    def __init__(self, workers_amount, queue_manager, task_dispatcher, thread_manager, factory, callback):
         self.tasks = []
         self.workers_amount = workers_amount
         self.queue_manager = queue_manager
         self.thread_manager = thread_manager
         self.task_dispatcher = task_dispatcher
         self.factory = factory
+        self.callback = callback
 
     def set_tasks(self, tasks: list):
         self.tasks = tasks
 
     def run(self):
+        if not self.tasks:
+            return
+
         task_queues = self.queue_manager.create_queues(self.workers_amount)
         self.task_dispatcher.dispatch(
             self.workers_amount, task_queues, self.tasks)
@@ -30,8 +34,8 @@ class ProcessRunner(IProcessRunner):
         for thread in threads:
             thread.join()
 
-        logger.info(
-            f"Billing proceess ended, sending summary to Discord...")
+        if self.callback:
+            self.callback(self)
 
 
 class QueueManager(IQueueManager):

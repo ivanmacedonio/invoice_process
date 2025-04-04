@@ -4,28 +4,39 @@ from app.services.payclub import PayclubService
 from app.decorators.error_handling_provider import error_handling_provider
 from app.configs.environments import WORKERS_AMOUNT
 from app.configs.logger import logger
+from functools import partial
 
 
 @error_handling_provider
 def billing_process_facade(args):
-    transactions = get_transactions_strategy(custom_dates=args.to_dict())
-
     queue_manager = QueueManager()
     task_dispatcher = TaskDispatcher()
     thread_manager = ThreadManager()
     factory = WorkerFactory()
 
-    logger.info(f"Starting process with {WORKERS_AMOUNT} threads")
-
     concurrent_process_runner = ProcessRunner(
-        WORKERS_AMOUNT, queue_manager, task_dispatcher, thread_manager, factory)
-    concurrent_process_runner.set_tasks(transactions)
-    concurrent_process_runner.run()
+        WORKERS_AMOUNT, queue_manager, task_dispatcher, thread_manager, factory, callback=partial(
+            start_process_runner,
+            args=args
+        ))
+    start_process_runner(concurrent_process_runner, args)
+    logger.info(f"Billing proceess ended, sending summary to Discord...")
+
+
+def start_process_runner(process_runner, args):
+    transactions = get_transactions_strategy(custom_dates=args.to_dict())
+    process_runner.set_tasks(transactions)
+    process_runner.run()
+
+
+payclub_instance = None
 
 
 def setup_and_get_payclub_instance():
-    payclub_repository_instance = PayclubRepository()
-    payclub_instance = PayclubService(payclub_repository_instance)
+    global payclub_instance
+    if not payclub_instance:
+        payclub_repository_instance = PayclubRepository()
+        payclub_instance = PayclubService(payclub_repository_instance)
     return payclub_instance
 
 

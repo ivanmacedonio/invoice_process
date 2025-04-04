@@ -27,7 +27,8 @@ class PayclubRequestException(requests.RequestException):
 class PayclubRepository(IPayclubRepository):
 
     def __init__(self):
-        pass
+        self.page = 1
+        self.pages_amount = 1
 
     def get_authorization_response(self):
         query_payload = PayclubAuthQueryPayload(**{
@@ -58,7 +59,10 @@ class PayclubRepository(IPayclubRepository):
         return response
 
     def get_credits_transactions_by_date(self, access_token, date_from, date_to):
-        query_params = f'dateTimeFrom={date_from}&dateTimeTo={date_to}'
+        if self.page > self.pages_amount:
+            return []  # break the callback if is out of index
+
+        query_params = f'dateTimeFrom={date_from}&dateTimeTo={date_to}&page={self.page}&per_page={50}'
         query_payload = PayclubQueryPayload(**{
             'url': f'{PVS_BASE_URL_PATH}/pxadapters/hlpoints/company/SC000001?{query_params}',
             'headers': {'Authorization': f'Bearer {access_token}', 'appname': PVS_APP_NAME}
@@ -69,7 +73,15 @@ class PayclubRepository(IPayclubRepository):
         if response.status_code > 299:
             raise PayclubRequestException(response)
 
-        logger.info(
-            f'Iterating over {response.json().get('pagination', {}).get('total_records', None)} transactions')
+        pagination_data = response.json().get('pagination', {})
+        self.pages_amount = pagination_data.get('total_pages')
 
-        return response
+        logger.info(
+            f'Page {self.page}/{pagination_data.get('total_pages')}'
+        )
+        logger.info(
+            f'Iterating over {len(response.json().get('data', []))} transactions')
+
+        self.page = self.page + 1
+
+        return response.json().get('data')

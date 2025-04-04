@@ -23,11 +23,9 @@ class PayclubServiceTest(TestCase):
     @classmethod
     def get_transactions_response(self):
         dummy_response = MagicMock()
-        dummy_response.json.return_value = {
-            "data": [
-                {"product": "payclub_transaction"}
-            ],
-        }
+        dummy_response = [
+            {"product": "payclub_transaction"}
+        ]
         return dummy_response
 
     @classmethod

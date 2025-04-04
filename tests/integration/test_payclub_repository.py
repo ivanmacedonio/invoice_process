@@ -34,11 +34,9 @@ class TestPayclubRepository(TestCase):
         get_transactions_response = self.repository.get_credits_transactions_by_date(
             access_token, self.date_from, self.date_to)
 
-        self.assertTrue(hasattr(get_transactions_response, "json"))
-        json_response = get_transactions_response.json()
+        json_response = get_transactions_response
         self.assertIsNotNone(access_token)
-        self.assertTrue("data" in json_response)
-        self.assertIsInstance(json_response['data'], list)
+        self.assertIsInstance(json_response, list)
         self.assertGreater(len(json_response), 0)
 
     def test_custom_exception_raises_successfully(self):

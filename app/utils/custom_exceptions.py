@@ -1,6 +1,7 @@
 class BaseCustomException(Exception):
     def __init__(self, transaction, message):
-        super().__init__(f"Transaction {transaction.get('txid')}: {message}")
+        super().__init__(
+            f"Transaction with payclubId {transaction.get('txid')}: {message}")
 
 
 class AlreadyInvoicedException(BaseCustomException):

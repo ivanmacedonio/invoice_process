@@ -33,7 +33,8 @@ class TestBillingService(TestCase):
             queue_manager=self.dummy_queue_manager,
             task_dispatcher=self.dummy_task_dispatcher,
             thread_manager=self.dummy_thread_manager,
-            factory=self.dummy_factory
+            factory=self.dummy_factory,
+            callback=lambda x: x
         )
 
         self.dummy_tasks = ['item_a', 'item_b', 'item_c', 'item_d']

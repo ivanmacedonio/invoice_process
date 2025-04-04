@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 from app.processes.billing_process import billing_process_facade
-from app.configs.environments import API_KEY
+from app.configs.environments import API_KEY, WORKERS_AMOUNT
 from app.configs.logger import logger
 
 credits_billing_blueprint = Blueprint(
@@ -24,5 +24,6 @@ def execute_credits_billing():
         return {"message": "Invalid API_KEY."}
 
     args = request.args
+    logger.info(f'The process will run with {WORKERS_AMOUNT} workers')
     billing_process_facade(args)
     return {"message": "Running billing procesess for payclub credits."}
