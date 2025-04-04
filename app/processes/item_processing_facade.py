@@ -23,9 +23,9 @@ def process_transaction_facade(transaction):
     transaction['provincia'] = "test"
     transaction['domicilio'] = "test"
     transaction['codigo_postal'] = "123"
-    logger.info(f'Iterating over the follow transaction: {transaction}')
 
     with instance_lock:
+        logger.info(f'Iterating over the follow transaction: {transaction}')
         arca_instance = get_or_create_arca_instance()
         arca_response = arca_instance.bill(transaction)
 
