@@ -1,4 +1,4 @@
-from app.interfaces.discord_interface import IDiscord
+from app.interfaces.discord_interface import IDiscord, ICounterManager
 from discordwebhook import Discord
 from app.configs.environments import DISCORD_WEBHOOK_URL
 from app.entities.dataclasses.discord_message_dataclass import DiscordMessagePayload
@@ -28,12 +28,39 @@ class DiscordService(IDiscord):
                     "value": content.rejected_invoices_count, "inline": True},
                 {"name": "Monto total facturado",
                     "value": content.invoiced_amount, "inline": True},
-                {"name": "Fecha de Inicio",
-                    "value": content.start_date, "inline": True},
-                {"name": "Fecha de Fin", "value": content.end_date, "inline": True},
             ]
         }
 
     def execute_webhook(self, content: dict):
         parsed_message = self.parse_message(content)
         self._instance.discord_instance.post(embeds=parsed_message)
+
+
+class CounterManager(ICounterManager):
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._instance:
+            cls._instance = super(CounterManager, cls).__new__(*args, **kwargs)
+            cls._instance.amounts = {
+                "invoices": 0,
+                "approved": 0,
+                "money_amount": 0
+            }
+        return cls._instance
+
+    @classmethod
+    def push_approved(cls, v: int):
+        cls.amounts['approved'] += v
+        return cls
+
+    @classmethod
+    def push_total(cls, v: int):
+        cls.amounts['total'] += v
+
+    @classmethod
+    def push_money_amount(cls, v: int):
+        cls.amounts['money_amount'] += v
+
+    def get_amounts(self):
+        return self._instance.amounts

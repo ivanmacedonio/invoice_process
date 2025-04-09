@@ -7,13 +7,14 @@ from app.services.arca import BillingService, BuildManager, InstanceManager
 from app.repositories.bill_repository import BillRepository, IBillRepository
 from app.builders.bill_builder import BillBuilder
 from app.services.email import EmailService
+from app.services.discord import CounterManager
 from app.decorators.error_handling_provider import error_handling_provider
 from app.entities.enums.payclub_status_enum import PayclubTransactionStatus
 from app.entities.enums.payclub_product_type import PayclubProductTypeEnum
 from app.utils.custom_exceptions import AlreadyInvoicedException, RejectedTransaction, InvalidTransactionType
 from app.utils.validate_fields import validate_fields
 
-instance_lock = Lock()
+instance_lock = Lock()  # create a lock to avoid the starvation and race condition
 
 
 @error_handling_provider
@@ -38,6 +39,8 @@ def process_transaction_facade(transaction):
         to_email=transaction.get("customerEmail"),
         b64_pdf=binary_pdf
     )
+
+    CounterManager().push_approved(1).push_money_amount(transaction['amount'])
 
 
 def skip_if_transaction_is_invalid(transaction):

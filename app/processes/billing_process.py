@@ -1,10 +1,13 @@
 from app.repositories.payclub_repository import PayclubRepository
 from app.services.concurrency import ProcessRunner, QueueManager, TaskDispatcher, ThreadManager, WorkerFactory
 from app.services.payclub import PayclubService
+from app.services.discord import Discord, CounterManager
+from app.entities.dataclasses.discord_message_dataclass import DiscordMessagePayload
 from app.decorators.error_handling_provider import error_handling_provider
 from app.configs.environments import WORKERS_AMOUNT
 from app.configs.logger import logger
 from functools import partial
+from datetime import datetime
 
 
 @error_handling_provider
@@ -19,8 +22,11 @@ def billing_process_facade(args):
             start_process_runner,
             args=args
         ))
+
     start_process_runner(concurrent_process_runner, args)
+
     logger.info(f"Billing proceess ended, sending summary to Discord...")
+    Discord().post(embeds=build_discord_message())
 
 
 def start_process_runner(process_runner, args):
@@ -49,3 +55,16 @@ def get_transactions_strategy(custom_dates: dict):
         return payclub_instance.get_transactions_by_date(date_from=custom_dates['dateFrom'], date_to=custom_dates['dateTo'])
     else:
         return payclub_instance.get_last_24_hours_transactions()
+
+
+def build_discord_message():
+    today = datetime.now()
+    amounts = CounterManager().get_amounts()
+    return DiscordMessagePayload(
+        title="Resumen de facturación de créditos Payclub",
+        description=f'Resumen del día: {str(today)}',
+        total_invoices_count=amounts['total'],
+        approved_invoices_count=amounts['approved'],
+        rejected_invoices_count=amounts['total'] - amounts['approved'],
+        invoiced_amount=amounts['money_amount']
+    )

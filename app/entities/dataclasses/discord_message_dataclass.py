@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from datetime import datetime
 
 
 @dataclass
@@ -10,5 +9,3 @@ class DiscordMessagePayload:
     approved_invoices_count: int
     rejected_invoices_count: int
     invoiced_amount: int
-    start_date: datetime
-    end_date: datetime

@@ -6,6 +6,7 @@ import queue
 from typing import Union, Optional
 from app.interfaces.thread_pool_interface import IQueue, IWorker, IDispatcher, IWorkerFactory
 from app.processes.item_processing_facade import process_transaction_facade
+from app.services.discord import CounterManager
 
 
 class ProcessRunner(IProcessRunner):
@@ -25,6 +26,7 @@ class ProcessRunner(IProcessRunner):
         if not self.tasks:
             return
 
+        CounterManager().push_total(len(self.tasks))
         task_queues = self.queue_manager.create_queues(self.workers_amount)
         self.task_dispatcher.dispatch(
             self.workers_amount, task_queues, self.tasks)
