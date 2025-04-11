@@ -2,6 +2,7 @@ from app.interfaces.discord_interface import IDiscord, ICounterManager
 from discordwebhook import Discord
 from app.configs.environments import DISCORD_WEBHOOK_URL
 from app.entities.dataclasses.discord_message_dataclass import DiscordMessagePayload
+from app.configs.logger import logger
 
 
 class DiscordService(IDiscord):
@@ -36,6 +37,8 @@ class DiscordService(IDiscord):
     def execute_webhook(self, content: DiscordMessagePayload):
         parsed_message = self.parse_message(content)
         response = self._instance.discord_instance.post(embeds=parsed_message)
+        logger.info(
+            f'Discord Webhook trigger status code: {response.status_code}')
         return response
 
 
