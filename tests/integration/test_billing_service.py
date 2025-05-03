@@ -1,8 +1,8 @@
 from unittest import TestCase
 from afip import Afip
-from app.services.database import Database
+from app.adapters.outbound.database.database import Database
 from app.services.arca import BillingService, InstanceManager, BuildManager
-from app.repositories.bill_repository import BillRepository
+from app.adapters.outbound.repositories.bill_repository import BillRepository
 
 
 class TestBillingService(TestCase):

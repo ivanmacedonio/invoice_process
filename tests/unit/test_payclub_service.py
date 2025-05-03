@@ -1,8 +1,8 @@
 from unittest.mock import MagicMock, patch
 from unittest import TestCase
 
-with patch('app.decorators.payclub_token_provider.payclub_token_provider', lambda x: x):
-    from app.services.payclub import PayclubService
+with patch('app.domain.decorators.payclub_token_provider.payclub_token_provider', lambda x: x):
+    from app.domain.services.wallet import PayclubService
 
 
 class PayclubServiceTest(TestCase):

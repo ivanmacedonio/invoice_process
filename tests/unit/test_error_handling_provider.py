@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from app.decorators.error_handling_provider import error_handling_provider
+from app.domain.decorators.error_handling_provider import error_handling_provider
 import requests
 
 
@@ -39,42 +39,42 @@ class TestErrorHandlingProvider(unittest.TestCase):
     def setUp(self):
         self.setup_functions_that_raises()
 
-    @patch("app.configs.logger.logger.error")
+    @patch("app.config.logger.logger.error")
     def test_handler_value_error(self, mock_logger):
 
         self.raise_value_error()
         mock_logger.assert_any_call(
             "Unexpected Value error: unhandled value error")
 
-    @patch("app.configs.logger.logger.error")
+    @patch("app.config.logger.logger.error")
     def test_handler_type_error(self, mock_logger):
 
         self.raise_type_error()
         mock_logger.assert_any_call(
             "Unexpected Type error: unhandled type error")
 
-    @patch("app.configs.logger.logger.error")
+    @patch("app.config.logger.logger.error")
     def test_handler_key_error(self, mock_logger):
 
         self.raise_key_error()
         mock_logger.assert_any_call(
             "Unexpected Key error: 'unhandled key error'")
 
-    @patch("app.configs.logger.logger.error")
+    @patch("app.config.logger.logger.error")
     def test_handler_attribute_error(self, mock_logger):
 
         self.raise_attribute_error()
         mock_logger.assert_any_call(
             "Unexpected Attribute error: unhandled attribute error")
 
-    @patch("app.configs.logger.logger.error")
+    @patch("app.config.logger.logger.error")
     def test_handler_request_exception_error(self, mock_logger):
 
         self.raise_request_exception_error()
         mock_logger.assert_any_call(
             "Unexpected request error: unhandled request error")
 
-    @patch("app.configs.logger.logger.error")
+    @patch("app.config.logger.logger.error")
     def test_handler_general_exception(self, mock_logger):
 
         self.raise_general_exception()

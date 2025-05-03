@@ -2,9 +2,9 @@
 import queue
 from copy import copy
 from unittest import TestCase
-from app.factories.worker_factory import WorkerFactory
-from app.services.concurrency import Worker, Dispatcher, Queue
-from app.interfaces.thread_pool_interface import IQueue
+from app.domain.factories.worker_factory import WorkerFactory
+from app.domain.services.concurrency import Worker, Dispatcher, Queue
+from app.domain.interfaces.thread_pool_interface import IQueue
 
 
 class TestThreadPool(TestCase):

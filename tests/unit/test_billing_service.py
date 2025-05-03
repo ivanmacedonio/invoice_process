@@ -1,7 +1,7 @@
 from copy import copy
 from unittest import TestCase
 from unittest.mock import MagicMock
-from app.services.concurrency import ProcessRunner, QueueManager, TaskDispatcher, ThreadManager
+from app.domain.services.concurrency import ProcessRunner, QueueManager, TaskDispatcher, ThreadManager
 
 
 class TestBillingService(TestCase):

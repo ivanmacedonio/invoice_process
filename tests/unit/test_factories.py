@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import patch
-from app.factories.worker_factory import WorkerFactory
-from app.interfaces.thread_pool_interface import IWorker
+from app.domain.factories.worker_factory import WorkerFactory
+from app.domain.interfaces.thread_pool_interface import IWorker
 from queue import Queue
 
 

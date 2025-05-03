@@ -1,7 +1,7 @@
 from unittest import TestCase
 from datetime import datetime
-from app.repositories.bill_repository import BillRepository
-from app.services.database import Database
+from app.adapters.outbound.repositories.bill_repository import BillRepository
+from app.adapters.outbound.database.database import Database
 
 
 class TestBillingService(TestCase):

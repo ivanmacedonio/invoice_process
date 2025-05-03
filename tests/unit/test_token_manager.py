@@ -1,7 +1,7 @@
 import time
 from unittest.mock import patch, MagicMock
 from unittest import TestCase
-from app.services.token_manager import TokenManager
+from app.domain.services.token_manager import TokenManager
 
 
 class TestTokenManager(TestCase):

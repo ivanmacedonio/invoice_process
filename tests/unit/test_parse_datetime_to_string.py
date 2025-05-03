@@ -1,6 +1,6 @@
 from unittest import TestCase
 import datetime
-from app.utils.parse_datetime_to_string import parse_datetime_to_payclub_date_format
+from app.domain.utils.parse_datetime_to_string import parse_datetime_to_payclub_date_format
 
 
 class TestParseDatetimeToString(TestCase):

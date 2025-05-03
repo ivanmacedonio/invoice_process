@@ -1,6 +1,6 @@
 from unittest import TestCase
 from unittest.mock import MagicMock
-from app.repositories.payclub_repository import PayclubRepository, PayclubRequestException
+from app.adapters.outbound.repositories.payclub_repository import PayclubRepository, PayclubRequestException
 from app.interfaces.payclub_interface import IPayclubRepository
 
 

@@ -1,8 +1,8 @@
 from unittest import TestCase
 from datetime import datetime
 from unittest.mock import MagicMock
-from app.services.arca import BillingService, BuildManager, InstanceManager
-from app.repositories.bill_repository import BillRepository
+from app.domain.services.arca import BillingService, BuildManager, InstanceManager
+from app.adapters.outbound.repositories.bill_repository import BillRepository
 
 
 class TestArcaCustomService(TestCase):

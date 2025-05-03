@@ -1,9 +1,9 @@
 from unittest import TestCase
-from app.repositories.bill_repository import BillRepository
+from app.adapters.outbound.repositories.bill_repository import BillRepository
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.entities.models.models import Facturante, Base
-from app.entities.dtos.invoice_payloads_dto import ClientDTO, SellDTO, BillDTO
+from app.domain.entities.models.models import Facturante, Base
+from app.domain.entities.dtos.invoice_payloads_dto import ClientDTO, SellDTO, BillDTO
 from datetime import datetime
 
 
