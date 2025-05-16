@@ -56,7 +56,7 @@ class BillBuilder:
             cae=cae_data.get('CAE'),
             concepto="Servicios",
             cuit=invoicer_data.get('cuit'),
-            direccion_facturante="Paraguay 2060",
+            direccion_facturante="Fonrouge 100",
             email_facturante=invoicer_data.get('email'),
             punto_de_venta=invoicer_data.get('punto_de_venta'),
             metodo_pago="Crédito",
