@@ -9,13 +9,13 @@ API_KEY = os.getenv('API_KEY')
 # concurrency
 WORKERS_AMOUNT = os.getenv('WORKERS_AMOUNT')
 
-# PVS config
-PVS_BASE_URL_PATH = os.getenv('PVS_BASE_URL_PATH')
-PVS_CLIENT_ID = os.getenv('PVS_CLIENT_ID')
-PVS_CLIENT_SECRET = os.getenv('PVS_CLIENT_SECRET')
-PVS_APP_NAME = os.getenv('PVS_APP_NAME')
-PVS_BODY = os.getenv('PVS_BODY')
-PVS_HEADERS = os.getenv('PVS_HEADERS')
+# MP config
+MP_BASE_URL_PATH = os.getenv('MP_BASE_URL_PATH')
+MP_CLIENT_ID = os.getenv('MP_CLIENT_ID')
+MP_CLIENT_SECRET = os.getenv('MP_CLIENT_SECRET')
+MP_APP_NAME = os.getenv('MP_APP_NAME')
+MP_BODY = os.getenv('MP_BODY')
+MP_HEADERS = os.getenv('MP_HEADERS')
 
 # database credentials
 DATABASE_DRIVER = os.getenv('DATABASE_DRIVER')

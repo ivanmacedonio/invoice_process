@@ -1,5 +1,5 @@
 import requests
-from app.config.dependencies import PVS_BASE_URL_PATH, PVS_CLIENT_ID, PVS_CLIENT_SECRET, PVS_APP_NAME, PVS_BODY, PVS_HEADERS
+from app.config.dependencies import MP_BASE_URL_PATH, MP_CLIENT_ID, MP_CLIENT_SECRET, MP_APP_NAME, MP_BODY, MP_HEADERS
 from requests.auth import HTTPBasicAuth
 from app.config.logger import logger
 from app.domain.interfaces.Mercadopago_interface import IMercadopagoRepository
@@ -32,11 +32,11 @@ class MercadopagoRepository(IMercadopagoRepository):
 
     def get_authorization_response(self):
         query_payload = MercadopagoAuthQueryPayload(**{
-            "url": f'{PVS_BASE_URL_PATH}/authorization',
-            "username": PVS_CLIENT_ID,
-            "password": PVS_CLIENT_SECRET,
-            "body": PVS_BODY,
-            "headers": PVS_HEADERS
+            "url": f'{MP_BASE_URL_PATH}/authorization',
+            "username": MP_CLIENT_ID,
+            "password": MP_CLIENT_SECRET,
+            "body": MP_BODY,
+            "headers": MP_HEADERS
         })
 
         authentication_method = HTTPBasicAuth(
@@ -59,8 +59,8 @@ class MercadopagoRepository(IMercadopagoRepository):
 
         query_params = f'dateTimeFrom={date_from}&dateTimeTo={date_to}&page={self.page}&per_page={50}'
         query_payload = MercadopagoQueryPayload(**{
-            'url': f'{PVS_BASE_URL_PATH}/pxadapters/hlpoints/company/SC000001?{query_params}',
-            'headers': {'Authorization': f'Bearer {access_token}', 'appname': PVS_APP_NAME}
+            'url': f'{MP_BASE_URL_PATH}/pxadapters/hlpoints/company/SC000001?{query_params}',
+            'headers': {'Authorization': f'Bearer {access_token}', 'appname': MP_APP_NAME}
         })
         response = requests.get(url=query_payload.url,
                                 headers=query_payload.headers)
