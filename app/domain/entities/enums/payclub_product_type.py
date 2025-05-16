@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class PayclubProductTypeEnum(Enum):
+class MercadopagoProductTypeEnum(Enum):
     RECEIVED_POINTS = "Received Points"
 
     def __str__(self):

@@ -5,16 +5,16 @@ from app.domain.interfaces.token_manager_interface import ITokenManager
 
 class TokenManager(ITokenManager):
 
-    def __init__(self, payclub_service):
+    def __init__(self, Mercadopago_service):
         self._cached_token = None
         self._token_expiration = 0
-        self.payclub_service = payclub_service
+        self.Mercadopago_service = Mercadopago_service
 
     def get_token(self):
         if self._cached_token and time.time() < self._token_expiration:
             return self._cached_token
 
-        access_token, _expires_in_time_in_seconds = self.payclub_service.get_authorization_token()
+        access_token, _expires_in_time_in_seconds = self.Mercadopago_service.get_authorization_token()
 
         self._cached_token = access_token
 

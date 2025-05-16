@@ -127,7 +127,7 @@ class TestBillRepository(TestCase):
             fecha_factura=datetime.now(),
             num_comprobante=1,
             tipo_comprobante=1,
-            payclub_payment_id="test_id",
+            Mercadopago_payment_id="test_id",
             punto_de_venta=123
         )
         bill_instance = self.repository.create_bill(
@@ -143,7 +143,7 @@ class TestBillRepository(TestCase):
         self.assertIsNotNone(bill_instance['tipo_comprobante'])
         self.assertIsNotNone(bill_instance['punto_de_venta'])
         self.assertIsNotNone(bill_instance['fecha_factura'])
-        self.assertIsNotNone(bill_instance['payclub_payment_id'])
+        self.assertIsNotNone(bill_instance['Mercadopago_payment_id'])
 
     def tearDown(self):
         self.drop_migration()

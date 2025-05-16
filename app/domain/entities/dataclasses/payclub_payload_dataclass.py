@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class PayclubAuthQueryPayload:
+class MercadopagoAuthQueryPayload:
     url: str
     username: str
     password: str
@@ -11,6 +11,6 @@ class PayclubAuthQueryPayload:
 
 
 @dataclass
-class PayclubQueryPayload:
+class MercadopagoQueryPayload:
     url: str
     headers: dict

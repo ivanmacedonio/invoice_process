@@ -8,8 +8,8 @@ from app.domain.builders.bill_builder import BillBuilder
 from app.domain.services.email import EmailService
 from app.domain.services.discord import CounterManager
 from app.domain.decorators.error_handling_provider import error_handling_provider
-from app.domain.entities.enums.payclub_status_enum import PayclubTransactionStatus
-from app.domain.entities.enums.payclub_product_type import PayclubProductTypeEnum
+from app.domain.entities.enums.Mercadopago_status_enum import MercadopagoTransactionStatus
+from app.domain.entities.enums.Mercadopago_product_type import MercadopagoProductTypeEnum
 from app.domain.utils.custom_exceptions import AlreadyInvoicedException, RejectedTransaction, InvalidTransactionType
 from app.domain.utils.validate_fields import validate_fields
 
@@ -51,7 +51,7 @@ def skip_if_transaction_is_invalid(transaction):
 
 
 def is_transaction_approved(transaction):
-    return transaction.get("status") == PayclubTransactionStatus.CONFIRMED.value
+    return transaction.get("status") == MercadopagoTransactionStatus.CONFIRMED.value
 
 
 def transaction_was_already_invoiced(transaction):
@@ -62,7 +62,7 @@ def transaction_was_already_invoiced(transaction):
 
 
 def is_received_points_product(transaction):
-    return transaction.get('product') == PayclubProductTypeEnum.RECEIVED_POINTS.value
+    return transaction.get('product') == MercadopagoProductTypeEnum.RECEIVED_POINTS.value
 
 
 def validate_transaction_fields(transaction):

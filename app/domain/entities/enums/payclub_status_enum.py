@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class PayclubTransactionStatus(Enum):
+class MercadopagoTransactionStatus(Enum):
     CONFIRMED = "Confirmed"
     REJECTED = "Rejected"
 

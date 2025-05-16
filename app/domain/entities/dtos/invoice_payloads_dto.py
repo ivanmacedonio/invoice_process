@@ -30,7 +30,7 @@ class BillDTO:
     num_comprobante: int
     punto_de_venta: int
     fecha_factura: DateTime
-    payclub_payment_id: str
+    Mercadopago_payment_id: str
 
 
 @dataclass

@@ -1,5 +1,5 @@
 from functools import wraps
-from app.domain.interfaces.payclub_interface import IPayclubRepository, IPayclubService
+from app.domain.interfaces.Mercadopago_interface import IMercadopagoRepository, IMercadopagoService
 
 token_manager_instance = None
 
@@ -8,16 +8,16 @@ def token_manager_singleton():
     global token_manager_instance
     if not token_manager_instance:
         from app.domain.services.token_manager import TokenManager
-        from app.adapters.outbound.repositories.payclub_repository import PayclubRepository
-        from app.domain.services.wallet import PayclubService
+        from app.adapters.outbound.repositories.Mercadopago_repository import MercadopagoRepository
+        from app.domain.services.wallet import MercadopagoService
 
-        payclub_repository: IPayclubRepository = PayclubRepository()
-        payclub_service: IPayclubService = PayclubService(payclub_repository)
-        token_manager_instance = TokenManager(payclub_service)
+        Mercadopago_repository: IMercadopagoRepository = MercadopagoRepository()
+        Mercadopago_service: IMercadopagoService = MercadopagoService(Mercadopago_repository)
+        token_manager_instance = TokenManager(Mercadopago_service)
     return token_manager_instance
 
 
-def payclub_token_provider(func):
+def Mercadopago_token_provider(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
 

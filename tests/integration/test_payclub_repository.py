@@ -1,24 +1,24 @@
 from unittest import TestCase
 from unittest.mock import MagicMock
-from app.adapters.outbound.repositories.payclub_repository import PayclubRepository, PayclubRequestException
-from app.interfaces.payclub_interface import IPayclubRepository
+from app.adapters.outbound.repositories.Mercadopago_repository import MercadopagoRepository, MercadopagoRequestException
+from app.interfaces.Mercadopago_interface import IMercadopagoRepository
 
 
-class TestPayclubRepository(TestCase):
+class TestMercadopagoRepository(TestCase):
 
     def setUpDummyDatesRange(self):
         self.date_from = "20250301 00:00:00"
         self.date_to = "20250310 23:59:59"
 
     def setUpRepository(self):
-        payclub_repository: IPayclubRepository = PayclubRepository()
-        self.repository = payclub_repository
+        Mercadopago_repository: IMercadopagoRepository = MercadopagoRepository()
+        self.repository = Mercadopago_repository
 
     def setUp(self):
         self.setUpRepository()
         self.setUpDummyDatesRange()
 
-    def test_authorization_payclub_endpoint(self):
+    def test_authorization_Mercadopago_endpoint(self):
         response = self.repository.get_authorization_response()
         self.assertTrue(hasattr(response, 'json'))
 
@@ -47,8 +47,8 @@ class TestPayclubRepository(TestCase):
             }
         }
         dummy_response.status_code = 400
-        with self.assertRaises(PayclubRequestException) as context:
-            raise PayclubRequestException(dummy_response)
+        with self.assertRaises(MercadopagoRequestException) as context:
+            raise MercadopagoRequestException(dummy_response)
 
         self.assertEqual(context.exception.status_code, 400)
         self.assertEqual(str(context.exception),

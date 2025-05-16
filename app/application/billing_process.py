@@ -1,6 +1,6 @@
-from app.adapters.outbound.repositories.payclub_repository import PayclubRepository
+from app.adapters.outbound.repositories.Mercadopago_repository import MercadopagoRepository
 from app.domain.services.concurrency import ProcessRunner, QueueManager, TaskDispatcher, ThreadManager, WorkerFactory
-from app.domain.services.wallet import PayclubService
+from app.domain.services.wallet import MercadopagoService
 from app.domain.services.discord import Discord, CounterManager
 from app.domain.entities.dataclasses.discord_message_dataclass import DiscordMessagePayload
 from app.domain.decorators.error_handling_provider import error_handling_provider
@@ -35,33 +35,33 @@ def start_process_runner(process_runner, args):
     process_runner.run()
 
 
-payclub_instance = None
+Mercadopago_instance = None
 
 
-def setup_and_get_payclub_instance():
-    global payclub_instance
-    if not payclub_instance:
-        payclub_repository_instance = PayclubRepository()
-        payclub_instance = PayclubService(payclub_repository_instance)
-    return payclub_instance
+def setup_and_get_Mercadopago_instance():
+    global Mercadopago_instance
+    if not Mercadopago_instance:
+        Mercadopago_repository_instance = MercadopagoRepository()
+        Mercadopago_instance = MercadopagoService(Mercadopago_repository_instance)
+    return Mercadopago_instance
 
 
 def get_transactions_strategy(custom_dates: dict):
-    payclub_instance = setup_and_get_payclub_instance()
+    Mercadopago_instance = setup_and_get_Mercadopago_instance()
     # query README.md to view the wished format of the dates
     dates_were_received = all(key in custom_dates for key in [
                               'dateFrom', 'dateTo'])
     if dates_were_received:
-        return payclub_instance.get_transactions_by_date(date_from=custom_dates['dateFrom'], date_to=custom_dates['dateTo'])
+        return Mercadopago_instance.get_transactions_by_date(date_from=custom_dates['dateFrom'], date_to=custom_dates['dateTo'])
     else:
-        return payclub_instance.get_last_24_hours_transactions()
+        return Mercadopago_instance.get_last_24_hours_transactions()
 
 
 def build_discord_message():
     today = datetime.now()
     amounts = CounterManager().get_amounts()
     return DiscordMessagePayload(
-        title="Resumen de facturación de créditos Payclub",
+        title="Resumen de facturación de créditos Mercadopago",
         description=f'Resumen del día: {str(today)}',
         total_invoices_count=amounts['total'],
         approved_invoices_count=amounts['approved'],

@@ -3,9 +3,9 @@ from abc import ABC, abstractmethod
 
 class ITokenManager:
     @abstractmethod
-    def __init__(self, payclub_service):
-        if not payclub_service:
-            raise ValueError('payclub_service arg is missing')
+    def __init__(self, Mercadopago_service):
+        if not Mercadopago_service:
+            raise ValueError('Mercadopago_service arg is missing')
         pass
 
     @abstractmethod

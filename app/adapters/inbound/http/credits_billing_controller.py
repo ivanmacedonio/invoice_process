@@ -26,4 +26,4 @@ def execute_credits_billing():
     args = request.args
     logger.info(f'The process will run with {WORKERS_AMOUNT} workers')
     billing_process_facade(args)
-    return {"message": "Running billing procesess for payclub credits."}
+    return {"message": "Running billing procesess for Mercadopago credits."}

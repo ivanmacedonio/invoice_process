@@ -41,7 +41,7 @@ class BillBuilder:
             tipo_comprobante=6,
             num_comprobante=bill_data.get('CbteDesde'),
             fecha_factura=today,
-            payclub_payment_id=transaction.get('txid'),
+            Mercadopago_payment_id=transaction.get('txid'),
             punto_de_venta=bill_data.get('PtoVta')
         )
 

@@ -59,7 +59,7 @@ def upgrade():
         sa.Column('punto_de_venta', sa.Integer(), nullable=False),
         sa.Column('fecha_factura', sa.DateTime(),
                   default=sa.func.now(), nullable=False),
-        sa.Column('payclub_payment_id', sa.String(), nullable=False)
+        sa.Column('Mercadopago_payment_id', sa.String(), nullable=False)
     )
 
     op.create_table(

@@ -2,7 +2,7 @@ from abc import abstractmethod, ABC
 import re
 
 
-class IPayclubService(ABC):
+class IMercadopagoService(ABC):
 
     @abstractmethod
     def __init__(self, repository):
@@ -26,7 +26,7 @@ class IPayclubService(ABC):
         pass
 
 
-class IPayclubRepository(ABC):
+class IMercadopagoRepository(ABC):
 
     @abstractmethod
     def __init__(self):

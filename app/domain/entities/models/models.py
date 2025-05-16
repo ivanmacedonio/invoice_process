@@ -45,7 +45,7 @@ class Factura(Base):
     num_comprobante: Mapped[int] = mapped_column()
     punto_de_venta: Mapped[int] = mapped_column()
     fecha_factura: Mapped[datetime] = mapped_column(default=func.now())
-    payclub_payment_id: Mapped[str] = mapped_column()
+    Mercadopago_payment_id: Mapped[str] = mapped_column()
 
 
 class Cliente(Base):

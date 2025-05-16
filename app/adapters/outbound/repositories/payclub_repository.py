@@ -2,11 +2,11 @@ import requests
 from app.config.dependencies import PVS_BASE_URL_PATH, PVS_CLIENT_ID, PVS_CLIENT_SECRET, PVS_APP_NAME, PVS_BODY, PVS_HEADERS
 from requests.auth import HTTPBasicAuth
 from app.config.logger import logger
-from app.domain.interfaces.payclub_interface import IPayclubRepository
-from app.domain.entities.dataclasses.payclub_payload_dataclass import PayclubAuthQueryPayload, PayclubQueryPayload
+from app.domain.interfaces.Mercadopago_interface import IMercadopagoRepository
+from app.domain.entities.dataclasses.Mercadopago_payload_dataclass import MercadopagoAuthQueryPayload, MercadopagoQueryPayload
 
 
-class PayclubRequestException(requests.RequestException):
+class MercadopagoRequestException(requests.RequestException):
 
     def __init__(self, response):
         super().__init__(response)
@@ -15,7 +15,7 @@ class PayclubRequestException(requests.RequestException):
 
     def get_error_message(self):
         try:
-            logger.error(f'Payclub error response: {self.response.text}')
+            logger.error(f'Mercadopago error response: {self.response.text}')
             return self.response.json().get("error", {}).get("serviceErrorMessage", "No error message provided")
         except ValueError:
             return "No error message provided"
@@ -24,14 +24,14 @@ class PayclubRequestException(requests.RequestException):
         return f'status_code: {self.status_code} - error_message: {self.get_error_message()}'
 
 
-class PayclubRepository(IPayclubRepository):
+class MercadopagoRepository(IMercadopagoRepository):
 
     def __init__(self):
         self.page = 1
         self.pages_amount = 1
 
     def get_authorization_response(self):
-        query_payload = PayclubAuthQueryPayload(**{
+        query_payload = MercadopagoAuthQueryPayload(**{
             "url": f'{PVS_BASE_URL_PATH}/authorization',
             "username": PVS_CLIENT_ID,
             "password": PVS_CLIENT_SECRET,
@@ -46,10 +46,10 @@ class PayclubRepository(IPayclubRepository):
             url=query_payload.url, headers=query_payload.headers, auth=authentication_method, data=query_payload.body)
 
         logger.info(
-            f'Payclub token retrieve response status code: {str(response.status_code)}')
+            f'Mercadopago token retrieve response status code: {str(response.status_code)}')
 
         if response.status_code > 299:
-            raise PayclubRequestException(response)
+            raise MercadopagoRequestException(response)
 
         return response
 
@@ -58,7 +58,7 @@ class PayclubRepository(IPayclubRepository):
             return []  # break the callback if is out of index
 
         query_params = f'dateTimeFrom={date_from}&dateTimeTo={date_to}&page={self.page}&per_page={50}'
-        query_payload = PayclubQueryPayload(**{
+        query_payload = MercadopagoQueryPayload(**{
             'url': f'{PVS_BASE_URL_PATH}/pxadapters/hlpoints/company/SC000001?{query_params}',
             'headers': {'Authorization': f'Bearer {access_token}', 'appname': PVS_APP_NAME}
         })
@@ -66,7 +66,7 @@ class PayclubRepository(IPayclubRepository):
                                 headers=query_payload.headers)
 
         if response.status_code > 299:
-            raise PayclubRequestException(response)
+            raise MercadopagoRequestException(response)
 
         pagination_data = response.json().get('pagination', {})
         self.pages_amount = pagination_data.get('total_pages')
